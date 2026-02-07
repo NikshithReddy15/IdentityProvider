@@ -1,0 +1,15 @@
+/Users/chikku/My Projects/IdentityProvider/Extensions/bin/Debug/net10.0/Extensions.deps.json
+/Users/chikku/My Projects/IdentityProvider/Extensions/bin/Debug/net10.0/Extensions.dll
+/Users/chikku/My Projects/IdentityProvider/Extensions/bin/Debug/net10.0/Extensions.pdb
+/Users/chikku/My Projects/IdentityProvider/Extensions/bin/Debug/net10.0/Models.dll
+/Users/chikku/My Projects/IdentityProvider/Extensions/bin/Debug/net10.0/Models.pdb
+/Users/chikku/My Projects/IdentityProvider/Extensions/obj/Debug/net10.0/Extensions.csproj.AssemblyReference.cache
+/Users/chikku/My Projects/IdentityProvider/Extensions/obj/Debug/net10.0/Extensions.GeneratedMSBuildEditorConfig.editorconfig
+/Users/chikku/My Projects/IdentityProvider/Extensions/obj/Debug/net10.0/Extensions.AssemblyInfoInputs.cache
+/Users/chikku/My Projects/IdentityProvider/Extensions/obj/Debug/net10.0/Extensions.AssemblyInfo.cs
+/Users/chikku/My Projects/IdentityProvider/Extensions/obj/Debug/net10.0/Extensions.csproj.CoreCompileInputs.cache
+/Users/chikku/My Projects/IdentityProvider/Extensions/obj/Debug/net10.0/Extensions.csproj.Up2Date
+/Users/chikku/My Projects/IdentityProvider/Extensions/obj/Debug/net10.0/Extensions.dll
+/Users/chikku/My Projects/IdentityProvider/Extensions/obj/Debug/net10.0/refint/Extensions.dll
+/Users/chikku/My Projects/IdentityProvider/Extensions/obj/Debug/net10.0/Extensions.pdb
+/Users/chikku/My Projects/IdentityProvider/Extensions/obj/Debug/net10.0/ref/Extensions.dll

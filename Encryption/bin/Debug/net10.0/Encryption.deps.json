@@ -1,0 +1,485 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "Encryption/1.0.0": {
+        "dependencies": {
+          "Extensions": "1.0.0",
+          "Soenneker.Hashing.Argon2": "4.0.691"
+        },
+        "runtime": {
+          "Encryption.dll": {}
+        }
+      },
+      "AutoMapper/16.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.2",
+          "Microsoft.Extensions.Options": "10.0.0",
+          "Microsoft.IdentityModel.JsonWebTokens": "8.14.0"
+        },
+        "runtime": {
+          "lib/net10.0/AutoMapper.dll": {
+            "assemblyVersion": "16.0.0.0",
+            "fileVersion": "16.0.0.0"
+          }
+        }
+      },
+      "Intellenum/2.0.1": {
+        "runtime": {
+          "lib/net8.0/Intellenum.SharedTypes.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.1.0"
+          }
+        }
+      },
+      "Konscious.Security.Cryptography.Argon2/1.3.1": {
+        "dependencies": {
+          "Konscious.Security.Cryptography.Blake2": "1.1.1"
+        },
+        "runtime": {
+          "lib/net8.0/Konscious.Security.Cryptography.Argon2.dll": {
+            "assemblyVersion": "1.3.1.0",
+            "fileVersion": "1.3.1.0"
+          }
+        }
+      },
+      "Konscious.Security.Cryptography.Blake2/1.1.1": {
+        "runtime": {
+          "lib/net8.0/Konscious.Security.Cryptography.Blake2.dll": {
+            "assemblyVersion": "1.1.1.0",
+            "fileVersion": "1.1.1.0"
+          }
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection.Abstractions/10.0.2": {
+        "runtime": {
+          "lib/net10.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.225.61305"
+          }
+        }
+      },
+      "Microsoft.Extensions.Logging.Abstractions/10.0.2": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.2"
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.Extensions.Logging.Abstractions.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.225.61305"
+          }
+        }
+      },
+      "Microsoft.Extensions.Options/10.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.2",
+          "Microsoft.Extensions.Primitives": "10.0.0"
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.Extensions.Options.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.25.52411"
+          }
+        }
+      },
+      "Microsoft.Extensions.Primitives/10.0.0": {
+        "runtime": {
+          "lib/net10.0/Microsoft.Extensions.Primitives.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.25.52411"
+          }
+        }
+      },
+      "Microsoft.IdentityModel.Abstractions/8.14.0": {
+        "runtime": {
+          "lib/net9.0/Microsoft.IdentityModel.Abstractions.dll": {
+            "assemblyVersion": "8.14.0.0",
+            "fileVersion": "8.14.0.60815"
+          }
+        }
+      },
+      "Microsoft.IdentityModel.JsonWebTokens/8.14.0": {
+        "dependencies": {
+          "Microsoft.IdentityModel.Tokens": "8.14.0"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.IdentityModel.JsonWebTokens.dll": {
+            "assemblyVersion": "8.14.0.0",
+            "fileVersion": "8.14.0.60815"
+          }
+        }
+      },
+      "Microsoft.IdentityModel.Logging/8.14.0": {
+        "dependencies": {
+          "Microsoft.IdentityModel.Abstractions": "8.14.0"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.IdentityModel.Logging.dll": {
+            "assemblyVersion": "8.14.0.0",
+            "fileVersion": "8.14.0.60815"
+          }
+        }
+      },
+      "Microsoft.IdentityModel.Tokens/8.14.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.2",
+          "Microsoft.IdentityModel.Logging": "8.14.0"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.IdentityModel.Tokens.dll": {
+            "assemblyVersion": "8.14.0.0",
+            "fileVersion": "8.14.0.60815"
+          }
+        }
+      },
+      "Soenneker.Culture.English.US/4.0.34": {
+        "runtime": {
+          "lib/net10.0/Soenneker.Culture.English.US.dll": {
+            "assemblyVersion": "4.0.34.0",
+            "fileVersion": "4.0.34.0"
+          }
+        }
+      },
+      "Soenneker.Enums.ContentKinds/4.0.7": {
+        "dependencies": {
+          "Intellenum": "2.0.1"
+        },
+        "runtime": {
+          "lib/net10.0/Soenneker.Enums.ContentKinds.dll": {
+            "assemblyVersion": "4.0.7.0",
+            "fileVersion": "4.0.7.0"
+          }
+        }
+      },
+      "Soenneker.Extensions.Arrays.Bytes/4.0.46": {
+        "runtime": {
+          "lib/net10.0/Soenneker.Extensions.Arrays.Bytes.dll": {
+            "assemblyVersion": "4.0.46.0",
+            "fileVersion": "4.0.46.0"
+          }
+        }
+      },
+      "Soenneker.Extensions.Char/4.0.81": {
+        "runtime": {
+          "lib/net10.0/Soenneker.Extensions.Char.dll": {
+            "assemblyVersion": "4.0.81.0",
+            "fileVersion": "4.0.81.0"
+          }
+        }
+      },
+      "Soenneker.Extensions.Spans.Readonly.Bytes/4.0.11": {
+        "dependencies": {
+          "Soenneker.Enums.ContentKinds": "4.0.7"
+        },
+        "runtime": {
+          "lib/net10.0/Soenneker.Extensions.Spans.Readonly.Bytes.dll": {
+            "assemblyVersion": "4.0.11.0",
+            "fileVersion": "4.0.11.0"
+          }
+        }
+      },
+      "Soenneker.Extensions.Spans.Readonly.Chars/4.0.23": {
+        "dependencies": {
+          "Soenneker.Extensions.Char": "4.0.81",
+          "Soenneker.Extensions.Spans.Readonly.Bytes": "4.0.11",
+          "Soenneker.Utils.PooledStringBuilders": "4.0.10"
+        },
+        "runtime": {
+          "lib/net10.0/Soenneker.Extensions.Spans.Readonly.Chars.dll": {
+            "assemblyVersion": "4.0.23.0",
+            "fileVersion": "4.0.23.0"
+          }
+        }
+      },
+      "Soenneker.Extensions.String/4.0.600": {
+        "dependencies": {
+          "Soenneker.Culture.English.US": "4.0.34",
+          "Soenneker.Extensions.Arrays.Bytes": "4.0.46",
+          "Soenneker.Extensions.Char": "4.0.81",
+          "Soenneker.Extensions.Spans.Readonly.Chars": "4.0.23",
+          "Soenneker.Utils.Random": "4.0.104",
+          "Soenneker.Utils.RegexCollection": "4.0.80"
+        },
+        "runtime": {
+          "lib/net10.0/Soenneker.Extensions.String.dll": {
+            "assemblyVersion": "4.0.600.0",
+            "fileVersion": "4.0.600.0"
+          }
+        }
+      },
+      "Soenneker.Extensions.Task/4.0.111": {
+        "runtime": {
+          "lib/net10.0/Soenneker.Extensions.Task.dll": {
+            "assemblyVersion": "4.0.111.0",
+            "fileVersion": "4.0.111.0"
+          }
+        }
+      },
+      "Soenneker.Hashing.Argon2/4.0.691": {
+        "dependencies": {
+          "Konscious.Security.Cryptography.Argon2": "1.3.1",
+          "Soenneker.Extensions.String": "4.0.600",
+          "Soenneker.Extensions.Task": "4.0.111",
+          "Soenneker.Utils.Random.Security": "4.0.289"
+        },
+        "runtime": {
+          "lib/net10.0/Soenneker.Hashing.Argon2.dll": {
+            "assemblyVersion": "4.0.691.0",
+            "fileVersion": "4.0.691.0"
+          }
+        }
+      },
+      "Soenneker.Utils.PooledStringBuilders/4.0.10": {
+        "runtime": {
+          "lib/net10.0/Soenneker.Utils.PooledStringBuilders.dll": {
+            "assemblyVersion": "4.0.10.0",
+            "fileVersion": "4.0.10.0"
+          }
+        }
+      },
+      "Soenneker.Utils.Random/4.0.104": {
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.2"
+        },
+        "runtime": {
+          "lib/net10.0/Soenneker.Utils.Random.dll": {
+            "assemblyVersion": "4.0.104.0",
+            "fileVersion": "4.0.104.0"
+          }
+        }
+      },
+      "Soenneker.Utils.Random.Security/4.0.289": {
+        "runtime": {
+          "lib/net10.0/Soenneker.Utils.Random.Security.dll": {
+            "assemblyVersion": "4.0.289.0",
+            "fileVersion": "4.0.289.0"
+          }
+        }
+      },
+      "Soenneker.Utils.RegexCollection/4.0.80": {
+        "runtime": {
+          "lib/net10.0/Soenneker.Utils.RegexCollection.dll": {
+            "assemblyVersion": "4.0.80.0",
+            "fileVersion": "4.0.80.0"
+          }
+        }
+      },
+      "Extensions/1.0.0": {
+        "dependencies": {
+          "AutoMapper": "16.0.0",
+          "Models": "1.0.0"
+        },
+        "runtime": {
+          "Extensions.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Models/1.0.0": {
+        "runtime": {
+          "Models.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Encryption/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "AutoMapper/16.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-JIhkKjEsUcIPPbCR7cGQlH3a2ySLW2Tof6CXcJb5WbaoUkniREpJOlC2ROkaM/nck2b5JjptLIUdHvbItGvLGQ==",
+      "path": "automapper/16.0.0",
+      "hashPath": "automapper.16.0.0.nupkg.sha512"
+    },
+    "Intellenum/2.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-zDrnWqRGXHU8vL3xzOxDzNTgkX1NUWzHgIn92iMA3vrMdOvSMhXMIWmrU0jYe7etxqdUP8ZbaizFeMGFnwbOxA==",
+      "path": "intellenum/2.0.1",
+      "hashPath": "intellenum.2.0.1.nupkg.sha512"
+    },
+    "Konscious.Security.Cryptography.Argon2/1.3.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-T+OAGwzYYXftahpOxO7J4xA5K6urxwGnWQf3M+Jpi+76Azv/0T3M5SuN+h7/QvXuiqNw3ZEZ5QqVLI5ygDAylw==",
+      "path": "konscious.security.cryptography.argon2/1.3.1",
+      "hashPath": "konscious.security.cryptography.argon2.1.3.1.nupkg.sha512"
+    },
+    "Konscious.Security.Cryptography.Blake2/1.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-odwOyzj/J/lHJZNwFWJGU/LRecBShupAJ2S8TQqZfhUe9niHzu/voBYK5wuVKsvSpzbfupKQYZguVyIk1sgOkQ==",
+      "path": "konscious.security.cryptography.blake2/1.1.1",
+      "hashPath": "konscious.security.cryptography.blake2.1.1.1.nupkg.sha512"
+    },
+    "Microsoft.Extensions.DependencyInjection.Abstractions/10.0.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-zOIurr59+kUf9vNcsUkCvKWZv+fPosUZXURZesYkJCvl0EzTc9F7maAO4Cd2WEV7ZJJ0AZrFQvuH6Npph9wdBw==",
+      "path": "microsoft.extensions.dependencyinjection.abstractions/10.0.2",
+      "hashPath": "microsoft.extensions.dependencyinjection.abstractions.10.0.2.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Logging.Abstractions/10.0.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-RZkez/JjpnO+MZ6efKkSynN6ZztLpw3WbxNzjLCPBd97wWj1S9ZYPWi0nmT4kWBRa6atHsdM1ydGkUr8GudyDQ==",
+      "path": "microsoft.extensions.logging.abstractions/10.0.2",
+      "hashPath": "microsoft.extensions.logging.abstractions.10.0.2.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Options/10.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-8oCAgXOow5XDrY9HaXX1QmH3ORsyZO/ANVHBlhLyCeWTH5Sg4UuqZeOTWJi6484M+LqSx0RqQXDJtdYy2BNiLQ==",
+      "path": "microsoft.extensions.options/10.0.0",
+      "hashPath": "microsoft.extensions.options.10.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Primitives/10.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-inRnbpCS0nwO/RuoZIAqxQUuyjaknOOnCEZB55KSMMjRhl0RQDttSmLSGsUJN3RQ3ocf5NDLFd2mOQViHqMK5w==",
+      "path": "microsoft.extensions.primitives/10.0.0",
+      "hashPath": "microsoft.extensions.primitives.10.0.0.nupkg.sha512"
+    },
+    "Microsoft.IdentityModel.Abstractions/8.14.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-iwbCpSjD3ehfTwBhtSNEtKPK0ICun6ov7Ibx6ISNA9bfwIyzI2Siwyi9eJFCJBwxowK9xcA1mj+jBWiigeqgcQ==",
+      "path": "microsoft.identitymodel.abstractions/8.14.0",
+      "hashPath": "microsoft.identitymodel.abstractions.8.14.0.nupkg.sha512"
+    },
+    "Microsoft.IdentityModel.JsonWebTokens/8.14.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-4jOpiA4THdtpLyMdAb24dtj7+6GmvhOhxf5XHLYWmPKF8ApEnApal1UnJsKO4HxUWRXDA6C4WQVfYyqsRhpNpQ==",
+      "path": "microsoft.identitymodel.jsonwebtokens/8.14.0",
+      "hashPath": "microsoft.identitymodel.jsonwebtokens.8.14.0.nupkg.sha512"
+    },
+    "Microsoft.IdentityModel.Logging/8.14.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-eqqnemdW38CKZEHS6diA50BV94QICozDZEvSrsvN3SJXUFwVB9gy+/oz76gldP7nZliA16IglXjXTCTdmU/Ejg==",
+      "path": "microsoft.identitymodel.logging/8.14.0",
+      "hashPath": "microsoft.identitymodel.logging.8.14.0.nupkg.sha512"
+    },
+    "Microsoft.IdentityModel.Tokens/8.14.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-lKIZiBiGd36k02TCdMHp1KlNWisyIvQxcYJvIkz7P4gSQ9zi8dgh6S5Grj8NNG7HWYIPfQymGyoZ6JB5d1Lo1g==",
+      "path": "microsoft.identitymodel.tokens/8.14.0",
+      "hashPath": "microsoft.identitymodel.tokens.8.14.0.nupkg.sha512"
+    },
+    "Soenneker.Culture.English.US/4.0.34": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-7IUv1kklBvgXNw7VQcDr/LOSiH7jSlAdyBLRcilz0qG678Zv2INOJesx/KsxapDo/OcJxlvBBa2dj2W634wiKQ==",
+      "path": "soenneker.culture.english.us/4.0.34",
+      "hashPath": "soenneker.culture.english.us.4.0.34.nupkg.sha512"
+    },
+    "Soenneker.Enums.ContentKinds/4.0.7": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Yop+uU6BSk5mQ6uWwg0w44eIL1vE9FAUuctyzx54fQyJ2TERqyHrdhR6yiljzRKh/se+Dc49i/BcE+drRsn4Og==",
+      "path": "soenneker.enums.contentkinds/4.0.7",
+      "hashPath": "soenneker.enums.contentkinds.4.0.7.nupkg.sha512"
+    },
+    "Soenneker.Extensions.Arrays.Bytes/4.0.46": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ikl1ZNSE0S87tR7JyTCXjYdsHsdNalMNIyHSGEhHd8/aqQOhViriGSvJHlpv6f/Oc/XYJhjPfO0sxDxMKIsGgQ==",
+      "path": "soenneker.extensions.arrays.bytes/4.0.46",
+      "hashPath": "soenneker.extensions.arrays.bytes.4.0.46.nupkg.sha512"
+    },
+    "Soenneker.Extensions.Char/4.0.81": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Rt0ScNgn36wC86rWqHR4xpscHSIEUZfa/SjLJ79TBdEUj0TQqRgeDtY6UC5mPuP8yklt+eKRd9i9nrT3lcU3+g==",
+      "path": "soenneker.extensions.char/4.0.81",
+      "hashPath": "soenneker.extensions.char.4.0.81.nupkg.sha512"
+    },
+    "Soenneker.Extensions.Spans.Readonly.Bytes/4.0.11": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-wboxSpXBDdYXzjGziOTR/H0PKz2w67dlZ0UtOpvLvu/R3higAeSEOLO2fiTeMPnXKZq2hfVlDu9HzNO9hGc+gA==",
+      "path": "soenneker.extensions.spans.readonly.bytes/4.0.11",
+      "hashPath": "soenneker.extensions.spans.readonly.bytes.4.0.11.nupkg.sha512"
+    },
+    "Soenneker.Extensions.Spans.Readonly.Chars/4.0.23": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-sUexS9p9v2ky3HgTqGE+64z5VV4ElrJ0ISoOoP+RjCgcgT8UdUWMcgygwTVVY7ssryJ81eyOv/U9GyTb052lDA==",
+      "path": "soenneker.extensions.spans.readonly.chars/4.0.23",
+      "hashPath": "soenneker.extensions.spans.readonly.chars.4.0.23.nupkg.sha512"
+    },
+    "Soenneker.Extensions.String/4.0.600": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-zMFOCMFzkZA+xoG6LQTdonvjUgqMS414Qs9ZiJ3/veWx4/1odw6t+6RYSwN20G4AARsPzYO1l7288zujsxtktw==",
+      "path": "soenneker.extensions.string/4.0.600",
+      "hashPath": "soenneker.extensions.string.4.0.600.nupkg.sha512"
+    },
+    "Soenneker.Extensions.Task/4.0.111": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/oaS78dyd4b0ZhmpGXWwLb8EO53PppB8WdiPpae59YqitvNrbjzquBPxm1NpYISSbSISTBeg2h38Gi5Et04haA==",
+      "path": "soenneker.extensions.task/4.0.111",
+      "hashPath": "soenneker.extensions.task.4.0.111.nupkg.sha512"
+    },
+    "Soenneker.Hashing.Argon2/4.0.691": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-SkGFjFyWrXUEoRAu+hhoon/fWJEmaZZJckVziCwfo1b++eIseATSB/siRVtRE+V7DrqcJUDSlnvHQHlRGO2OiA==",
+      "path": "soenneker.hashing.argon2/4.0.691",
+      "hashPath": "soenneker.hashing.argon2.4.0.691.nupkg.sha512"
+    },
+    "Soenneker.Utils.PooledStringBuilders/4.0.10": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-IAMeK0dBjCrxREJ09aOAfz0wPqimQP9RwIUsjUu60bEp4SFxyigD1Ae9Hox4f/8yqaweyShtD0dWMVaAyNxVuw==",
+      "path": "soenneker.utils.pooledstringbuilders/4.0.10",
+      "hashPath": "soenneker.utils.pooledstringbuilders.4.0.10.nupkg.sha512"
+    },
+    "Soenneker.Utils.Random/4.0.104": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ucq8w/G5A3D77XVKyNDe6RcUy96sIkIhgtJlzxrrxUcyuF7rHlKHJHXOkFHxylRNkgdrFuR5258YRwHB+9W10Q==",
+      "path": "soenneker.utils.random/4.0.104",
+      "hashPath": "soenneker.utils.random.4.0.104.nupkg.sha512"
+    },
+    "Soenneker.Utils.Random.Security/4.0.289": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-IZ9rhS7hPMsCMxTtjtwlXfwto6KJZ0Skv+B1C81jy1g5mx03S+T1QMRryhga9D2W/+9pnCU5NvhqsVbqc9O/9g==",
+      "path": "soenneker.utils.random.security/4.0.289",
+      "hashPath": "soenneker.utils.random.security.4.0.289.nupkg.sha512"
+    },
+    "Soenneker.Utils.RegexCollection/4.0.80": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Sk/h6r9VB+jedZ8d3pr0zKHC0WndFT3HUlj/sR0yrOaMoBlOLbaURNbb5h9YMIq4DNsGJV87MEs5rCzkaHqUWA==",
+      "path": "soenneker.utils.regexcollection/4.0.80",
+      "hashPath": "soenneker.utils.regexcollection.4.0.80.nupkg.sha512"
+    },
+    "Extensions/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Models/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
