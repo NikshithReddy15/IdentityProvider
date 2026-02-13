@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Models.DataTransferObjects;
 using Services.Authentication;
 
-namespace AuthenticationAPI.Controllers.Registration;
+namespace IdentityProvider.WebAPI.Controllers.Registration;
 
 [ApiController]
 [Route("api/registration")]

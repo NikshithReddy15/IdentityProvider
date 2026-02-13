@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Models.DataTransferObjects;
 using Services.Authentication;
 
-namespace AuthenticationAPI.Controllers.Login;
+namespace IdentityProvider.WebAPI.Controllers.Login;
 
 [ApiController]
 [Route("api/login")]

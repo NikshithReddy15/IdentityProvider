@@ -32,7 +32,12 @@ public class DapperDb : IDapperDb, IDisposable
         _connectionString = connectionString;
     }
 
-    public async Task<int> ExecuteAsync<T>(string sql, object? parameters = null)
+    public async Task<T> ExecuteScalarAsync<T>(string sql, object? parameters = null)
+    {
+        return await Db.ExecuteScalarAsync<T>(sql, parameters);
+    }
+
+    public async Task<int> ExecuteAsync(string sql, object? parameters = null)
     {
         return await Db.ExecuteAsync(sql, parameters);
     }

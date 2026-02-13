@@ -1,6 +1,6 @@
 using Soenneker.Hashing.Argon2;
 
-namespace Encryption.Hashing;
+namespace Encryption.Hashing.Argon2Hashing;
 
 public class Argon2HashingService : IArgon2HashingService
 {

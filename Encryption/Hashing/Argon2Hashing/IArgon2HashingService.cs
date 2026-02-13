@@ -1,4 +1,4 @@
-namespace Encryption.Hashing;
+namespace Encryption.Hashing.Argon2Hashing;
 
 public interface IArgon2HashingService
 {

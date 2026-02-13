@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace AuthenticationAPI.Controllers.Authentication;
+namespace IdentityProvider.WebAPI.Controllers.Authentication;
 
 [ApiController]
 [Route("api/authentication")]

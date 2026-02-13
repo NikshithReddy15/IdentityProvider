@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AuthenticationAPI.Controllers;
+namespace IdentityProvider.WebAPI.Controllers;
 
 [Authorize]
 public class BaseAuthorizationController : ControllerBase

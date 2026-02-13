@@ -1,9 +1,12 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Extensions.Mapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Services;
+using Services.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,11 +23,68 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidAudience = jwtSettings["Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"])),
     };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnTokenValidated = async context =>
+        {
+            var securityToken = context.SecurityToken as JsonWebToken;
+            if (securityToken == null)
+            {
+                context.Fail("Invalid token");
+                return;
+            }
+
+            var bearer = context.Request.Headers.Authorization.ToString();
+            var jwtToken = bearer.Replace("Bearer ", string.Empty).Trim();
+            var authenticationService = context.HttpContext.RequestServices.GetRequiredService<IAuthenticationService>();
+            var isRevokedToken = await authenticationService.IsRevokedTokenAsync(jwtToken);
+            if (isRevokedToken)
+            {
+                context.Fail("Login expired");
+            }
+        },
+        OnChallenge = context =>
+        {
+            if (context.Response.HasStarted)
+            {
+                return Task.CompletedTask;
+            }
+            
+            context.HandleResponse();
+            context.Response.StatusCode = 401;
+            context.Response.ContentType = "text/plain";
+            return context.Response.WriteAsync("Unauthorized");
+        },
+        OnAuthenticationFailed = context =>
+        {
+            if (context.Response.HasStarted)
+            {
+                return Task.CompletedTask;
+            }
+
+            context.Response.StatusCode = 401;
+            context.Response.ContentType = "text/plain";
+            return context.Response.WriteAsync(context.Exception.Message);
+        },
+        OnForbidden = context =>
+        {
+            if (context.Response.HasStarted)
+            {
+                return Task.CompletedTask;
+            }
+
+            context.HttpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
+            context.Response.ContentType = "text/plain";
+            return context.Response.WriteAsync("Forbidden");
+        },
+    };
 });
 
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 builder.Services.RegisterAuthenticationWebApiServices();
+builder.Services.AddScoped<JwtSecurityTokenHandler>();
 if (builder.Environment.IsDevelopment())
 {
     builder.Services.AddSwaggerGen(options =>
