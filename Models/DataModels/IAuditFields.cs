@@ -1,7 +1,6 @@
 namespace Models.DataModels;
 
-public interface IAuditFields
+public interface IAuditFields : ICreatedAuditFields
 {
-    public DateTime DateCreated { get; set; }
     public DateTime DateModified { get; set; }
 }

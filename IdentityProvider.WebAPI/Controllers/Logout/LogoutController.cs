@@ -9,11 +9,11 @@ namespace IdentityProvider.WebAPI.Controllers.Logout;
 public class LogoutController (IAuthenticationService authenticationService, JwtSecurityTokenHandler jwtSecurityTokenHandler) : BaseAuthorizationController
 {
     [HttpPost]
-    public async Task LogoutAsync()
+    public async Task LogoutAsync(Guid userId)
     {
         var bearer = Request.Headers.Authorization.ToString();
         var jwtToken = bearer.Replace("Bearer ", string.Empty).Trim();
         var expiresOn = jwtSecurityTokenHandler.ReadJwtToken(jwtToken).ValidTo;
-        await authenticationService.LogoutAsync(jwtToken, expiresOn);
+        await authenticationService.LogoutAsync(userId, jwtToken, expiresOn);
     }
 }

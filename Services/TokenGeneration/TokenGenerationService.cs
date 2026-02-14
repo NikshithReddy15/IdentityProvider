@@ -1,9 +1,13 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Numerics;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
+using Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Models.CoreModels;
+using Models.DataModels;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
 namespace Services.TokenGeneration;
@@ -27,10 +31,32 @@ public class TokenGenerationService(IConfiguration configuration) : ITokenGenera
             audience: jwtSettings["Audience"],
             claims: claims,
             notBefore: DateTime.UtcNow,
-            expires: DateTime.UtcNow.AddMinutes(Convert.ToInt32(jwtSettings["ExpiresInMinutes"])),
+            expires: DateTime.UtcNow.AddMinutes(Convert.ToInt32(jwtSettings["ExpiryInMinutes"])),
             signingCredentials: signingCredentials
         );
         
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    public RefreshTokenDataModel GenerateRefreshToken(Guid userId)
+    {
+        var bytes = RandomNumberGenerator.GetBytes(64);
+        var jwtSettings = configuration.GetSection("JwtSettings");
+        if (!Int32.TryParse(jwtSettings["RefreshTokenExpiryInDays"], out var refreshTokenExpiryInDays))
+        {
+            throw new InvalidOperationException("RefreshTokenExpiryInDays must be an integer");
+        }
+
+        var refreshTokenExpirationDate = DateTime.UtcNow.AddDays(refreshTokenExpiryInDays);
+        var refreshToken = new RefreshTokenDataModel
+        {
+            UserId =  userId,
+            RefreshToken = Convert.ToBase64String(bytes),
+            ExpiresOn = refreshTokenExpirationDate,
+            IsRevoked = false,
+        };
+
+        refreshToken.SetAuditFieldsOnCreate();
+        return refreshToken;
     }
 }

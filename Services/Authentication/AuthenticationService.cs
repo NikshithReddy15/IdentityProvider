@@ -1,4 +1,4 @@
-using Encryption.Hashing;
+using DatabaseAdapter.Dapper;
 using Encryption.Hashing.Argon2Hashing;
 using Encryption.Hashing.SHA256Hashing;
 using Extensions;
@@ -6,13 +6,14 @@ using Extensions.Mapper;
 using Models.CoreModels;
 using Models.DataModels;
 using Models.DataTransferObjects;
+using Services.Repositories.RefreshToken;
 using Services.Repositories.RevokedToken;
 using Services.Repositories.User;
 using Services.TokenGeneration;
 
 namespace Services.Authentication;
 
-public class AuthenticationService(IUserRepository userRepository, IRevokedTokenRepository revokedTokenRepository, ITokenGenerationService tokenGenerationService, IArgon2HashingService hashingService, ISHA256HashingService sha256HashingService)
+public class AuthenticationService(IUserRepository userRepository, IRevokedTokenRepository revokedTokenRepository, IRefreshTokenRepository refreshTokenRepository, ITokenGenerationService tokenGenerationService, IArgon2HashingService hashingService, ISHA256HashingService sha256HashingService, IDapperDb dapperDb)
     : IAuthenticationService
 {
     public async Task CreateUserAsync(RegisterUserDto registerUserDto)
@@ -20,7 +21,7 @@ public class AuthenticationService(IUserRepository userRepository, IRevokedToken
         var isExistingUser = await userRepository.IsExistingUser(registerUserDto.Email);
         if (isExistingUser)
         {
-            throw new Exception("User with that email already exists");
+            throw new Exception("This email is already taken. Please use another email address.");
         }
         
         var userDataModel = registerUserDto.MapTo<UserDataModel>();
@@ -30,35 +31,78 @@ public class AuthenticationService(IUserRepository userRepository, IRevokedToken
         await userRepository.RegisterUser(userDataModel);
     }
 
-    public async Task<string> LoginAsync(LoginDetailsDto loginDetailsDto)
+    public async Task<TokenDetailsDto> LoginAsync(LoginDetailsDto loginDetailsDto)
     {
-        var user = await userRepository.GetUserByEmail(loginDetailsDto.Email);
-        if (user is null)
+        var userDataModel = await userRepository.GetUserByEmail(loginDetailsDto.Email);
+        if (userDataModel is null)
         {
-            throw new Exception("User with that email doesn't exist");
+            throw new Exception("User with this email doesn't exist.");
         }
 
-        var isValidPassword = await hashingService.Verify(loginDetailsDto.Password, user.Password);
+        var isValidPassword = await hashingService.Verify(loginDetailsDto.Password, userDataModel.Password);
         if (!isValidPassword)
         {
-            throw new UnauthorizedAccessException("Password is incorrect");
+            throw new UnauthorizedAccessException("Please provide valid credentials.");
         }
         
-        return tokenGenerationService.GenerateJwtToken(user.MapTo<User>());
+        var user = userDataModel.MapTo<User>();
+        var (jwtToken, refreshToken) = GenerateTokens(user);
+        await refreshTokenRepository.CreateRefreshToken(refreshToken);
+
+        return new TokenDetailsDto(jwtToken, refreshToken.RefreshToken);
     }
 
-    public async Task LogoutAsync(string jwtToken, DateTime expiresOn)
+    public async Task LogoutAsync(Guid userId, string jwtToken, DateTime expiresOn)
     {
-        var hashedToken = sha256HashingService.Hash(jwtToken);
-        var revokedToken = new RevokedTokenDataModel
+        var (refreshTokenDataModel, revokedToken) = await GetRevokedTokenAndRefreshTokenAsync(userId, jwtToken, expiresOn);
+        try
         {
-            Id = Guid.NewGuid(),
-            HashedToken = hashedToken,
-            GeneratedOn =  DateTime.UtcNow,
-            ExpiresOn = expiresOn
-        };
+            dapperDb.BeginTransaction();
+            await revokedTokenRepository.CreateRevokedToken(revokedToken);
+            if (refreshTokenDataModel is not null)
+            {
+                await refreshTokenRepository.RevokeRefreshToken(refreshTokenDataModel.RefreshToken);
+            }
+            
+            dapperDb.CommitTransaction();
+        }
+        catch (Exception)
+        {
+            dapperDb.RollbackTransaction();
+            throw;
+        }
+    }
+
+    public async Task<TokenDetailsDto> RefreshTokenAsync(Guid userId, string jwtToken, DateTime expiresOn)
+    {
+        var userDataModel = await userRepository.GetUserById(userId);
+        if (userDataModel is null)
+        {
+            throw new Exception("User details doesn't exist.");
+        }
         
-        await revokedTokenRepository.CreateRevokedToken(revokedToken);
+        var user = userDataModel.MapTo<User>();
+        var (newJwtToken, newRefreshTokenDataModel) = GenerateTokens(user);
+        var (refreshTokenDataModel, revokedToken) = await GetRevokedTokenAndRefreshTokenAsync(userId, jwtToken, expiresOn);
+        try
+        {
+            dapperDb.BeginTransaction();
+            await revokedTokenRepository.CreateRevokedToken(revokedToken);
+            if (refreshTokenDataModel is not null)
+            {
+                await refreshTokenRepository.RevokeRefreshToken(refreshTokenDataModel.RefreshToken);
+            }
+            
+            await refreshTokenRepository.CreateRefreshToken(newRefreshTokenDataModel);
+            dapperDb.CommitTransaction();
+        }
+        catch (Exception ex)
+        {
+            dapperDb.RollbackTransaction();
+            throw;
+        }
+
+        return new TokenDetailsDto(newJwtToken, newRefreshTokenDataModel.RefreshToken);
     }
 
     public async Task<bool> IsRevokedTokenAsync(string jwtToken)
@@ -66,4 +110,28 @@ public class AuthenticationService(IUserRepository userRepository, IRevokedToken
         var hashedToken = sha256HashingService.Hash(jwtToken);
         return await revokedTokenRepository.IsRevokedToken(hashedToken);
     }
+
+    #region Private Methods
+
+    private (string JwtToken, RefreshTokenDataModel RefreshTokenDataModel) GenerateTokens(User user)
+    {
+        var jwtToken = tokenGenerationService.GenerateJwtToken(user);
+        var refreshToken = tokenGenerationService.GenerateRefreshToken(user.Id);
+        return (jwtToken, refreshToken);
+    }
+
+    private async Task<(RefreshTokenDataModel? RefreshTokenDataModel, RevokedTokenDataModel RevokedToken)> GetRevokedTokenAndRefreshTokenAsync(Guid userId, string jwtToken, DateTime expiresOn)
+    {
+        var refreshTokenDataModel = await refreshTokenRepository.GetRefreshToken(userId);
+        var hashedToken = sha256HashingService.Hash(jwtToken);
+        var revokedToken = new RevokedTokenDataModel
+        {
+            HashedToken = hashedToken,
+            ExpiresOn = expiresOn
+        };
+        revokedToken.SetAuditFieldsOnCreate();
+        return (refreshTokenDataModel, revokedToken);
+    }
+
+    #endregion
 }

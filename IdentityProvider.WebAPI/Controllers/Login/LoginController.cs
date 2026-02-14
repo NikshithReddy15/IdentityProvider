@@ -9,7 +9,7 @@ namespace IdentityProvider.WebAPI.Controllers.Login;
 public class LoginController (IAuthenticationService authenticationService) : ControllerBase
 {
     [HttpPost]
-    public async Task<string> LoginAsync(LoginDetailsDto loginDetailsDto)
+    public async Task<TokenDetailsDto> LoginAsync(LoginDetailsDto loginDetailsDto)
     {
         return await authenticationService.LoginAsync(loginDetailsDto);
     }

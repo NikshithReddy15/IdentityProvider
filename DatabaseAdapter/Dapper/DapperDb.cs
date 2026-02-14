@@ -20,6 +20,8 @@ public class DapperDb : IDapperDb, IDisposable
             return Connection;
         }
     }
+    
+    private IDbTransaction? Transaction { get; set; }
 
     public DapperDb(IConfiguration configuration)
     {
@@ -32,23 +34,54 @@ public class DapperDb : IDapperDb, IDisposable
         _connectionString = connectionString;
     }
 
+    public void BeginTransaction()
+    {
+        Db.Open();
+        Transaction = Db.BeginTransaction();
+    }
+
+    public void CommitTransaction()
+    {
+        if (Transaction is null)
+        {
+            throw new InvalidConfigurationException("BeginTransaction must be called before Commit");
+        }
+
+        Transaction.Commit();
+        Transaction.Dispose();
+        Db.Close();
+    }
+
+    public void RollbackTransaction()
+    {
+        if (Transaction is null)
+        {
+            throw new InvalidConfigurationException("BeginTransaction must be called before Rollback");
+        }
+
+        Transaction.Rollback();
+        Transaction.Dispose();
+        Db.Close();
+    }
+
     public async Task<T> ExecuteScalarAsync<T>(string sql, object? parameters = null)
     {
-        return await Db.ExecuteScalarAsync<T>(sql, parameters);
+        return await Db.ExecuteScalarAsync<T>(sql, parameters, transaction: Transaction);
     }
 
-    public async Task<int> ExecuteAsync(string sql, object? parameters = null)
+    public async Task ExecuteAsync(string sql, object? parameters = null)
     {
-        return await Db.ExecuteAsync(sql, parameters);
+        await Db.ExecuteAsync(sql, parameters, transaction: Transaction);
     }
 
-    public async Task<T?> QueryFirstOrDefaultAsync<T>(string sql, object? parameters = null)
+    public async Task<T?> QuerySingleOrDefaultAsync<T>(string sql, object? parameters = null)
     {
-        return await Db.QueryFirstOrDefaultAsync<T>(sql, parameters);
+        return await Db.QuerySingleOrDefaultAsync<T>(sql, parameters, transaction: Transaction);
     }
 
     public void Dispose()
     {
-        Db.Dispose();
+        Connection?.Dispose();
+        Transaction?.Dispose();
     }
 }

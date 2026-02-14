@@ -8,5 +8,7 @@ public interface IUserRepository
 
     Task RegisterUser(UserDataModel user);
 
+    Task<UserDataModel?> GetUserById(Guid userId);
+
     Task<UserDataModel?> GetUserByEmail(string email);
 }

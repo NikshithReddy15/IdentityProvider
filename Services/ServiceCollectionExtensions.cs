@@ -1,10 +1,9 @@
 using DatabaseAdapter.Dapper;
-using Encryption.Hashing;
 using Encryption.Hashing.Argon2Hashing;
 using Encryption.Hashing.SHA256Hashing;
-using Extensions.Mapper;
 using Microsoft.Extensions.DependencyInjection;
 using Services.Authentication;
+using Services.Repositories.RefreshToken;
 using Services.Repositories.RevokedToken;
 using Services.Repositories.User;
 using Services.TokenGeneration;
@@ -34,6 +33,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRevokedTokenRepository, RevokedTokenRepository>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
     }
 
     private static void RegisterEncryptionServices(IServiceCollection services)

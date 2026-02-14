@@ -7,7 +7,9 @@ internal class UserRepository(IDapperDb dapperDb) : IUserRepository
 {
     public async Task<bool> IsExistingUser(string email)
     {
-        var sql = "SELECT 1 FROM [dbo].[User] WHERE Email = @Email";
+        var sql =
+            "SELECT 1 FROM [dbo].[User] " +
+            "WHERE Email = @Email";
         return await dapperDb.ExecuteScalarAsync<bool>(sql, new { Email = email });
     }
 
@@ -19,9 +21,19 @@ internal class UserRepository(IDapperDb dapperDb) : IUserRepository
         await dapperDb.ExecuteAsync(sql, user);
     }
 
+    public async Task<UserDataModel?> GetUserById(Guid userId)
+    {
+        var sql =
+            "SELECT * FROM [dbo].[User] " +
+            "WHERE Id = @UserId";
+        return await dapperDb.QuerySingleOrDefaultAsync<UserDataModel>(sql, new { UserId = userId });
+    }
+
     public async Task<UserDataModel?> GetUserByEmail(string email)
     {
-        var sql = "SELECT * FROM [dbo].[User] WHERE Email = @Email";
-        return await dapperDb.QueryFirstOrDefaultAsync<UserDataModel>(sql, new { Email = email });
+        var sql =
+            "SELECT * FROM [dbo].[User] " +
+            "WHERE Email = @Email";
+        return await dapperDb.QuerySingleOrDefaultAsync<UserDataModel>(sql, new { Email = email });
     }
 }

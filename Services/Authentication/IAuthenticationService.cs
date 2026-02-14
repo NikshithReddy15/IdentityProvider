@@ -6,9 +6,11 @@ public interface IAuthenticationService
 {
     Task CreateUserAsync(RegisterUserDto registerUserDto);
     
-    Task<string> LoginAsync(LoginDetailsDto loginDetailsDto);
+    Task<TokenDetailsDto> LoginAsync(LoginDetailsDto loginDetailsDto);
 
-    Task LogoutAsync(string jwtToken, DateTime expiresOn);
+    Task LogoutAsync(Guid userId, string jwtToken, DateTime expiresOn);
+
+    Task<TokenDetailsDto> RefreshTokenAsync(Guid userId, string jwtToken, DateTime expiresOn);
 
     Task<bool> IsRevokedTokenAsync(string jwtToken);
 }

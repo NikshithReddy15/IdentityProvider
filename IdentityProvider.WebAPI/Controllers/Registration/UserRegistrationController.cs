@@ -5,8 +5,8 @@ using Services.Authentication;
 namespace IdentityProvider.WebAPI.Controllers.Registration;
 
 [ApiController]
-[Route("api/registration")]
-public class RegistrationController (IAuthenticationService authenticationService) : ControllerBase
+[Route("api/user/registration")]
+public class UserRegistrationController (IAuthenticationService authenticationService) : ControllerBase
 {
     [HttpPost]
     public async Task CreateUserAsync(RegisterUserDto registerUserDto)
