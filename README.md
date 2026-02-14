@@ -5,7 +5,9 @@ A .NET Web API for user authentication, registration, and JWT-based authorizatio
 ## Features
 
 - **User registration** — Create new user accounts with email and password
-- **Login** — Authenticate users and receive JWT tokens
+- **Login** — Authenticate users and receive JWT and refresh tokens
+- **Refresh token** — Exchange a valid refresh token for new JWT and refresh tokens
+- **Logout** — Revoke the current refresh token and blacklist the JWT
 - **JWT authentication** — Bearer token validation for protected endpoints
 - **Password hashing** — Argon2 for secure password storage
 
@@ -34,8 +36,10 @@ A .NET Web API for user authentication, registration, and JWT-based authorizatio
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/api/registration` | Register a new user |
-| POST | `/api/login` | Login and receive a JWT token |
+| POST | `/api/user/registration` | Register a new user |
+| POST | `/api/login` | Login and receive JWT and refresh tokens |
+| POST | `/api/token/refresh` | Exchange current JWT for new JWT and refresh token (requires Bearer token) |
+| POST | `/api/logout` | Logout and revoke tokens (requires Bearer token) |
 | GET | `/api/authentication` | Validate authentication (requires Bearer token) |
 
 ### Registration Request Body
@@ -61,6 +65,17 @@ A .NET Web API for user authentication, registration, and JWT-based authorizatio
 }
 ```
 
+### Login and Refresh Token Response
+
+`POST /api/login` and `POST /api/token/refresh` return:
+
+```json
+{
+  "jwtToken": "string",
+  "refreshToken": "string"
+}
+```
+
 ## Prerequisites
 
 - [.NET 10 SDK](https://dotnet.microsoft.com/download)
@@ -79,7 +94,8 @@ Configure `appsettings.json` with your settings:
     "Issuer": "AuthenticationAPIServer",
     "Audience": "AuthenticationAPIUser",
     "Key": "your-base64-encoded-secret-key",
-    "ExpiresInMinutes": 60
+    "ExpiryInMinutes": 60,
+    "RefreshTokenExpiryInDays": 30
   }
 }
 ```
