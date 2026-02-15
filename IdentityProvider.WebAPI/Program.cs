@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using Azure.Identity;
 using Extensions.Mapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -9,6 +10,9 @@ using Services;
 using Services.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var azureKeyVaultUri = new Uri(builder.Configuration["AzureKeyVaultUri"]);
+builder.Configuration.AddAzureKeyVault(azureKeyVaultUri, new DefaultAzureCredential());
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>

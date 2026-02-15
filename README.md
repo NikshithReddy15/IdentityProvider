@@ -15,9 +15,10 @@ A .NET Web API for user authentication, registration, and JWT-based authorizatio
 
 - .NET 10.0
 - ASP.NET Core Web API
-- JWT Bearer authentication
+- JWT Bearer authentication with refresh tokens
 - Dapper for data access
 - SQL Server database
+- Azure Key Vault for secrets (optional)
 - Swagger/OpenAPI (development)
 
 ## Project Structure
@@ -29,7 +30,7 @@ A .NET Web API for user authentication, registration, and JWT-based authorizatio
 | Models | Domain models, DTOs, data models |
 | DatabaseAdapter | Dapper-based data access layer |
 | Extensions | Mapping, JSON, and audit field extensions |
-| Encryption | Argon2 hashing service |
+| Encryption | Argon2 password hashing, SHA256 token hashing |
 | Database | SQL Server schema and tables |
 
 ## API Endpoints
@@ -46,15 +47,17 @@ A .NET Web API for user authentication, registration, and JWT-based authorizatio
 
 ```json
 {
-  "firstname": "string",
-  "middlename": "string",
-  "lastname": "string",
+  "firstName": "string",
+  "middleName": "string",
+  "lastName": "string",
   "email": "string",
   "countryCode": "string",
   "mobileNumber": "string",
   "password": "string"
 }
 ```
+
+(`middleName`, `countryCode`, and `mobileNumber` are optional.)
 
 ### Login Request Body
 
@@ -80,6 +83,7 @@ A .NET Web API for user authentication, registration, and JWT-based authorizatio
 
 - [.NET 10 SDK](https://dotnet.microsoft.com/download)
 - SQL Server (or Azure SQL Database)
+- Azure Key Vault (optional) — for storing JWT key and connection string in production
 
 ## Configuration
 
@@ -88,19 +92,21 @@ Configure `appsettings.json` with your settings:
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "your-sql-server-connection-string"
+    "IdentityDatabaseConnectionString": "your-sql-server-connection-string"
   },
   "JwtSettings": {
-    "Issuer": "AuthenticationAPIServer",
-    "Audience": "AuthenticationAPIUser",
-    "Key": "your-base64-encoded-secret-key",
+    "Issuer": "IdentityProviderServer",
+    "Audience": "IdentityProviderUser",
+    "Key": "your-secret-key",
     "ExpiryInMinutes": 60,
     "RefreshTokenExpiryInDays": 30
-  }
+  },
+  "AzureKeyVaultUri": "https://your-keyvault.vault.azure.net/"
 }
 ```
 
-For local development, use `appsettings.Development.json` or environment variables to override sensitive values.
+- **Azure Key Vault** — When `AzureKeyVaultUri` is set, the app loads secrets from Azure Key Vault (e.g. `Key`, `IdentityDatabaseConnectionString`) using DefaultAzureCredential. Omit or override in local config if not using Key Vault.
+- For local development, use `appsettings.Development.json` or environment variables to override sensitive values.
 
 ## Getting Started
 

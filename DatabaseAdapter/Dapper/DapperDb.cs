@@ -25,7 +25,7 @@ public class DapperDb : IDapperDb, IDisposable
 
     public DapperDb(IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        var connectionString = configuration.GetConnectionString("IdentityDatabaseConnectionString");
         if (string.IsNullOrEmpty(connectionString))
         {
             throw new InvalidConfigurationException("Missing connection string");

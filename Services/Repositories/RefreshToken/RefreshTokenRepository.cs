@@ -25,8 +25,8 @@ public class RefreshTokenRepository (IDapperDb dapperDb) : IRefreshTokenReposito
     {
         var sql =
             "UPDATE [dbo].[RefreshToken] " +
-            "SET IsRevoked = 1 " +
+            "SET IsRevoked = 1, RevokedOn = @RevokedOn " +
             "WHERE RefreshToken = @RefreshToken AND IsRevoked = 0";
-        await dapperDb.ExecuteAsync(sql, new { RefreshToken = refreshToken });
+        await dapperDb.ExecuteAsync(sql, new { RefreshToken = refreshToken, RevokedOn = DateTime.UtcNow });
     }
 }
