@@ -47,7 +47,23 @@ public class AuthenticationService(IUserRepository userRepository, IRevokedToken
         
         var user = userDataModel.MapTo<User>();
         var (jwtToken, refreshToken) = GenerateTokens(user);
-        await refreshTokenRepository.CreateRefreshToken(refreshToken);
+        var existingRefreshToken = await refreshTokenRepository.GetRefreshToken(user.Id);
+        try
+        {
+            dapperDb.BeginTransaction();
+            if (existingRefreshToken is not null)
+            {
+                await refreshTokenRepository.RevokeRefreshToken(existingRefreshToken.RefreshToken);
+            }
+            
+            await refreshTokenRepository.CreateRefreshToken(refreshToken);
+            dapperDb.CommitTransaction();
+        }
+        catch (Exception)
+        {
+            dapperDb.RollbackTransaction();
+            throw;
+        }
 
         return new TokenDetailsDto(jwtToken, refreshToken.RefreshToken);
     }

@@ -105,8 +105,8 @@ Configure `appsettings.json` with your settings:
 }
 ```
 
-- **Azure Key Vault** — When `AzureKeyVaultUri` is set, the app loads secrets from Azure Key Vault (e.g. `Key`, `IdentityDatabaseConnectionString`) using DefaultAzureCredential. Omit or override in local config if not using Key Vault.
-- For local development, use `appsettings.Development.json` or environment variables to override sensitive values.
+- **Azure Key Vault** — The app loads secrets from Azure Key Vault using `AzureKeyVaultUri` and DefaultAzureCredential. Store `Key` and `IdentityDatabaseConnectionString` in Key Vault, or set them in `appsettings.Development.json` / environment variables for local development (ensure `AzureKeyVaultUri` points to a valid vault or the app may fail at startup).
+- For local development without Key Vault, use `appsettings.Development.json` or environment variables for the connection string and JWT key.
 
 ## Getting Started
 
@@ -121,7 +121,7 @@ dotnet build
 dotnet run --project IdentityProvider.WebAPI
 ```
 
-The API runs at `https://localhost:5001` (or the port in `launchSettings.json`). Swagger UI is available at the root URL in Development mode.
+The API runs at **https://localhost:7285** (HTTP: **http://localhost:5281**) by default. See `IdentityProvider.WebAPI/Properties/launchSettings.json` for other profiles. In Development mode, Swagger UI is served at the root URL with Bearer (JWT) support configured.
 
 ## License
 
