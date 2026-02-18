@@ -14,13 +14,14 @@ namespace Services.TokenGeneration;
 
 public class TokenGenerationService(IConfiguration configuration) : ITokenGenerationService
 {
-    public string GenerateJwtToken(User user)
+    public string GenerateJwtToken(User user, Guid sessionId)
     {
         var claims = new Claim[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Name, user.Name),
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
+            new Claim(JwtRegisteredClaimNames.Sid, sessionId.ToString()),
         };
 
         var jwtSettings = configuration.GetSection("JwtSettings");
@@ -38,7 +39,7 @@ public class TokenGenerationService(IConfiguration configuration) : ITokenGenera
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public RefreshTokenDataModel GenerateRefreshToken(Guid userId)
+    public RefreshTokenDataModel GenerateRefreshToken(Guid userId, Guid sessionId)
     {
         var bytes = RandomNumberGenerator.GetBytes(64);
         var jwtSettings = configuration.GetSection("JwtSettings");
@@ -51,6 +52,7 @@ public class TokenGenerationService(IConfiguration configuration) : ITokenGenera
         var refreshToken = new RefreshTokenDataModel
         {
             UserId =  userId,
+            SessionId = sessionId,
             RefreshToken = Convert.ToBase64String(bytes),
             ExpiresOn = refreshTokenExpirationDate,
             IsRevoked = false,

@@ -3,6 +3,7 @@ using Encryption.Hashing.Argon2Hashing;
 using Encryption.Hashing.SHA256Hashing;
 using Microsoft.Extensions.DependencyInjection;
 using Services.Authentication;
+using Services.Repositories.LoginSession;
 using Services.Repositories.RefreshToken;
 using Services.Repositories.RevokedToken;
 using Services.Repositories.User;
@@ -34,6 +35,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRevokedTokenRepository, RevokedTokenRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddScoped<ILoginSessionRepository, LoginSessionRepository>();
     }
 
     private static void RegisterEncryptionServices(IServiceCollection services)

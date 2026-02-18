@@ -8,17 +8,17 @@ public class RefreshTokenRepository (IDapperDb dapperDb) : IRefreshTokenReposito
     public async Task CreateRefreshToken(RefreshTokenDataModel refreshToken)
     {
         var sql =
-            "INSERT INTO [dbo].[RefreshToken](UserId, RefreshToken, ExpiresOn, IsRevoked, DateCreated) " +
-            "VALUES (@UserId, @RefreshToken, @ExpiresOn, @IsRevoked, @DateCreated)";
+            "INSERT INTO [dbo].[RefreshToken](UserId, SessionId, RefreshToken, ExpiresOn, IsRevoked, DateCreated) " +
+            "VALUES (@UserId, @SessionId, @RefreshToken, @ExpiresOn, @IsRevoked, @DateCreated)";
         await dapperDb.ExecuteAsync(sql, refreshToken);
     }
 
-    public async Task<RefreshTokenDataModel?> GetRefreshToken(Guid userId)
+    public async Task<RefreshTokenDataModel?> GetRefreshToken(Guid userId, Guid sessionId)
     {
         var sql =
             "SELECT * FROM [dbo].[RefreshToken] " +
-            "WHERE UserId = @UserId AND IsRevoked = 0";
-        return await dapperDb.QuerySingleOrDefaultAsync<RefreshTokenDataModel>(sql, new { UserId = userId });
+            "WHERE UserId = @UserId AND SessionId = @SessionId AND IsRevoked = 0";
+        return await dapperDb.QuerySingleOrDefaultAsync<RefreshTokenDataModel>(sql, new { UserId = userId, SessionId = sessionId });
     }
     
     public async Task RevokeRefreshToken(string refreshToken)

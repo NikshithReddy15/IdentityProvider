@@ -11,6 +11,8 @@ public class LoginController (IAuthenticationService authenticationService) : Co
     [HttpPost]
     public async Task<TokenDetailsDto> LoginAsync(LoginDetailsDto loginDetailsDto)
     {
-        return await authenticationService.LoginAsync(loginDetailsDto);
+        var ipAddress = Request.HttpContext.Connection.RemoteIpAddress?.ToString();
+        var userAgent = Request.HttpContext.Request.Headers["User-Agent"].ToString();
+        return await authenticationService.LoginAsync(loginDetailsDto, userAgent, ipAddress);
     }
 }

@@ -5,7 +5,7 @@ namespace Services.TokenGeneration;
 
 public interface ITokenGenerationService
 {
-    string GenerateJwtToken(User user);
+    string GenerateJwtToken(User user, Guid sessionId);
 
-    RefreshTokenDataModel GenerateRefreshToken(Guid userId);
+    RefreshTokenDataModel GenerateRefreshToken(Guid userId, Guid sessionId);
 }

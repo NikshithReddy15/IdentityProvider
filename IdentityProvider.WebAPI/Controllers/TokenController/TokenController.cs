@@ -10,11 +10,11 @@ namespace IdentityProvider.WebAPI.Controllers.TokenController;
 public class TokenController (IAuthenticationService authenticationService, JwtSecurityTokenHandler jwtSecurityTokenHandler) : BaseAuthorizationController
 {
     [HttpPost("refresh")]
-    public async Task<TokenDetailsDto> RefreshTokenAsync(Guid userId)
+    public async Task<TokenDetailsDto> RefreshTokenAsync(SessionDetailsDto sessionDetailsDto)
     {
         var bearer = Request.Headers.Authorization.ToString();
         var jwtToken = bearer.Replace("Bearer ", string.Empty).Trim();
         var expiresOn = jwtSecurityTokenHandler.ReadJwtToken(jwtToken).ValidTo;
-        return await authenticationService.RefreshTokenAsync(userId, jwtToken, expiresOn);
+        return await authenticationService.RefreshTokenAsync(sessionDetailsDto, jwtToken, expiresOn);
     }
 }

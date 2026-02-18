@@ -4,7 +4,8 @@ public class RefreshTokenDataModel : ICreatedAuditFields
 {
     public Guid Id { get; set; }
     public Guid UserId { get; set; }
-    public required string RefreshToken  { get; set; }
+    public Guid SessionId { get; set; }
+    public required string RefreshToken { get; set; }
     public DateTime ExpiresOn { get; set; }
     public bool IsRevoked { get; set; }
     public DateTime? RevokedOn { get; set; }

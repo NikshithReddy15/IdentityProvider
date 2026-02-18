@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Azure.Identity;
+using Extensions;
 using Extensions.Mapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -8,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Services;
 using Services.Authentication;
+using JwtRegisteredClaimNames = System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,7 +47,22 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
             var isRevokedToken = await authenticationService.IsRevokedTokenAsync(jwtToken);
             if (isRevokedToken)
             {
-                context.Fail("Login expired");
+                context.Fail("Invalid token");
+                return;
+            }
+
+            var userId = context.Principal?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value?.ToGuid();
+            var sessionId = context.Principal?.FindFirst(JwtRegisteredClaimNames.Sid)?.Value?.ToGuid();
+            if (!userId.HasValue || !sessionId.HasValue)
+            {
+                context.Fail("Invalid token claims");
+                return;
+            }
+            
+            var isValidLoginSession = await authenticationService.IsValidLoginSessionAsync(userId.Value, sessionId.Value);
+            if (!isValidLoginSession)
+            {
+                context.Fail("Invalid login session");
             }
         },
         OnChallenge = context =>

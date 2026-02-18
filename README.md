@@ -5,11 +5,13 @@ A .NET Web API for user authentication, registration, and JWT-based authorizatio
 ## Features
 
 - **User registration** — Create new user accounts with email and password
-- **Login** — Authenticate users and receive JWT and refresh tokens
+- **Login** — Authenticate users and receive JWT and refresh tokens with session management
+- **Login session management** — Track user sessions with device information, user agent, and IP address
 - **Refresh token** — Exchange a valid refresh token for new JWT and refresh tokens
-- **Logout** — Revoke the current refresh token and blacklist the JWT
-- **JWT authentication** — Bearer token validation for protected endpoints
+- **Logout** — Deactivate login session, revoke refresh token, and blacklist the JWT
+- **JWT authentication** — Bearer token validation with session validation for protected endpoints
 - **Password hashing** — Argon2 for secure password storage
+- **Token revocation** — SHA256-hashed token blacklisting for enhanced security
 
 ## Tech Stack
 
@@ -26,22 +28,22 @@ A .NET Web API for user authentication, registration, and JWT-based authorizatio
 | Project | Description |
 |--------|-------------|
 | IdentityProvider.WebAPI | ASP.NET Core API with controllers and JWT setup |
-| Services | Business logic, authentication, repositories, token generation |
+| Services | Business logic, authentication, repositories (user, refresh token, login session, revoked token), token generation |
 | Models | Domain models, DTOs, data models |
 | DatabaseAdapter | Dapper-based data access layer |
 | Extensions | Mapping, JSON, and audit field extensions |
 | Encryption | Argon2 password hashing, SHA256 token hashing |
-| Database | SQL Server schema and tables |
+| Database | SQL Server schema and tables (User, RefreshToken, LoginSession, RevokedToken) |
 
 ## API Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | POST | `/api/user/registration` | Register a new user |
-| POST | `/api/login` | Login and receive JWT and refresh tokens |
-| POST | `/api/token/refresh` | Exchange current JWT for new JWT and refresh token (requires Bearer token) |
-| POST | `/api/logout` | Logout and revoke tokens (requires Bearer token) |
-| GET | `/api/authentication` | Validate authentication (requires Bearer token) |
+| POST | `/api/login` | Login and receive JWT and refresh tokens (creates a login session) |
+| POST | `/api/token/refresh` | Exchange current JWT for new JWT and refresh token (requires Bearer token, validates session) |
+| POST | `/api/logout` | Logout, deactivate session, and revoke tokens (requires Bearer token) |
+| GET | `/api/authentication` | Validate authentication and session (requires Bearer token) |
 
 ### Registration Request Body
 
@@ -64,9 +66,13 @@ A .NET Web API for user authentication, registration, and JWT-based authorizatio
 ```json
 {
   "email": "string",
-  "password": "string"
+  "password": "string",
+  "deviceId": "guid",
+  "deviceName": "string"
 }
 ```
+
+(`deviceId` and `deviceName` are required for session tracking.)
 
 ### Login and Refresh Token Response
 
@@ -78,6 +84,8 @@ A .NET Web API for user authentication, registration, and JWT-based authorizatio
   "refreshToken": "string"
 }
 ```
+
+**Note:** The JWT token includes a session ID (`sid` claim) that links to the login session. On login, a new session is created with device information, user agent, and IP address. Token validation checks that the session is active and belongs to the authenticated user.
 
 ## Prerequisites
 
