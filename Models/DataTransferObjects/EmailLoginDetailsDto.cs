@@ -1,6 +1,6 @@
 namespace Models.DataTransferObjects;
 
-public class LoginDetailsDto
+public class EmailLoginDetailsDto
 {
     public required string Email { get; set; }
     public required string Password { get; set; }

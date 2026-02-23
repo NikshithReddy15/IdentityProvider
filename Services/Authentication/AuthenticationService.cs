@@ -32,15 +32,15 @@ public class AuthenticationService(IUserRepository userRepository, IRevokedToken
         await userRepository.RegisterUser(userDataModel);
     }
 
-    public async Task<TokenDetailsDto> LoginAsync(LoginDetailsDto loginDetailsDto, string userAgent, string? ipAddress)
+    public async Task<TokenDetailsDto> LoginAsync(EmailLoginDetailsDto emailLoginDetailsDto, string userAgent, string? ipAddress)
     {
-        var userDataModel = await userRepository.GetUserByEmail(loginDetailsDto.Email);
+        var userDataModel = await userRepository.GetUserByEmail(emailLoginDetailsDto.Email);
         if (userDataModel is null)
         {
             throw new Exception("User with this email doesn't exist.");
         }
 
-        var isValidPassword = await hashingService.Verify(loginDetailsDto.Password, userDataModel.Password);
+        var isValidPassword = await hashingService.Verify(emailLoginDetailsDto.Password, userDataModel.Password);
         if (!isValidPassword)
         {
             throw new UnauthorizedAccessException("Please provide valid credentials.");
@@ -52,8 +52,8 @@ public class AuthenticationService(IUserRepository userRepository, IRevokedToken
         {
             Id = Guid.NewGuid(),
             UserId = user.Id,
-            DeviceId = loginDetailsDto.DeviceId,
-            DeviceName = loginDetailsDto.DeviceName,
+            DeviceId = emailLoginDetailsDto.DeviceId,
+            DeviceName = emailLoginDetailsDto.DeviceName,
             UserAgent = userAgent,
             IpAddress = ipAddress,
             IsActive = true,

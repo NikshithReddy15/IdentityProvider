@@ -9,10 +9,10 @@ namespace IdentityProvider.WebAPI.Controllers.Login;
 public class LoginController (IAuthenticationService authenticationService) : ControllerBase
 {
     [HttpPost]
-    public async Task<TokenDetailsDto> LoginAsync(LoginDetailsDto loginDetailsDto)
+    public async Task<TokenDetailsDto> LoginAsync(EmailLoginDetailsDto emailLoginDetailsDto)
     {
         var ipAddress = Request.HttpContext.Connection.RemoteIpAddress?.ToString();
         var userAgent = Request.HttpContext.Request.Headers["User-Agent"].ToString();
-        return await authenticationService.LoginAsync(loginDetailsDto, userAgent, ipAddress);
+        return await authenticationService.LoginAsync(emailLoginDetailsDto, userAgent, ipAddress);
     }
 }
