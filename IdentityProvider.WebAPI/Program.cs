@@ -13,10 +13,24 @@ using JwtRegisteredClaimNames = System.IdentityModel.Tokens.Jwt.JwtRegisteredCla
 
 var builder = WebApplication.CreateBuilder(args);
 
-var azureKeyVaultUri = new Uri(builder.Configuration["AzureKeyVaultUri"]);
+var azureKeyVaultUriConfiguration = builder.Configuration.GetRequiredSection("AzureKeyVaultUri");
+if (string.IsNullOrEmpty(azureKeyVaultUriConfiguration.Value))
+{
+    throw new InvalidOperationException("AzureKeyVaultUri is required.");
+}
+
+var azureKeyVaultUri = new Uri(azureKeyVaultUriConfiguration.Value);
 builder.Configuration.AddAzureKeyVault(azureKeyVaultUri, new DefaultAzureCredential());
 
-var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var jwtSettingsConfiguration = builder.Configuration.GetRequiredSection("JwtSettings");
+var keyConfiguration = jwtSettingsConfiguration.GetRequiredSection("Key");
+var issuerConfiguration = jwtSettingsConfiguration.GetRequiredSection("Issuer");
+var audienceConfiguration = jwtSettingsConfiguration.GetRequiredSection("Audience");
+if (string.IsNullOrEmpty(keyConfiguration.Value) || string.IsNullOrEmpty(issuerConfiguration.Value) || string.IsNullOrEmpty(audienceConfiguration.Value))
+{
+    throw new InvalidOperationException("Invalid JWT token configuration.");
+}
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
@@ -25,9 +39,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtSettings["Issuer"],
-        ValidAudience = jwtSettings["Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"])),
+        ValidIssuer = issuerConfiguration.Value,
+        ValidAudience = audienceConfiguration.Value,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyConfiguration.Value)),
     };
 
     options.Events = new JwtBearerEvents
@@ -51,8 +65,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
                 return;
             }
 
-            var userId = context.Principal?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value?.ToGuid();
-            var sessionId = context.Principal?.FindFirst(JwtRegisteredClaimNames.Sid)?.Value?.ToGuid();
+            var userId = context.Principal?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value.ToGuid();
+            var sessionId = context.Principal?.FindFirst(JwtRegisteredClaimNames.Sid)?.Value.ToGuid();
             if (!userId.HasValue || !sessionId.HasValue)
             {
                 context.Fail("Invalid token claims");

@@ -3,7 +3,6 @@ CREATE TABLE [dbo].[LoginSession]
     [Id]           UNIQUEIDENTIFIER PRIMARY KEY,
     [UserId]       UNIQUEIDENTIFIER NOT NULL,
     [DeviceId]     UNIQUEIDENTIFIER NOT NULL,
-    [DeviceName]   NVARCHAR(64)     NOT NULL,
     [UserAgent]    NVARCHAR(1024)   NOT NULL,
     [IpAddress]    NVARCHAR(45)     NULL,
     [IsActive]     BIT              NOT NULL

@@ -3,10 +3,12 @@ using Encryption.Hashing.Argon2Hashing;
 using Encryption.Hashing.SHA256Hashing;
 using Microsoft.Extensions.DependencyInjection;
 using Services.Authentication;
+using Services.Events;
 using Services.Repositories.LoginSession;
 using Services.Repositories.RefreshToken;
 using Services.Repositories.RevokedToken;
 using Services.Repositories.User;
+using Services.Repositories.UserOtp;
 using Services.TokenGeneration;
 
 namespace Services;
@@ -16,6 +18,7 @@ public static class ServiceCollectionExtensions
     public static void RegisterAuthenticationWebApiServices(this IServiceCollection services)
     {
         RegisterServices(services);
+        RegisterEventHandlers(services);
         RegisterMappingProfiles(services);
         RegisterDatabaseAdapters(services);
     }
@@ -33,6 +36,7 @@ public static class ServiceCollectionExtensions
     private static void RegisterRepositories(IServiceCollection services)
     {
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUserOtpRepository, UserOtpRepository>();
         services.AddScoped<IRevokedTokenRepository, RevokedTokenRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<ILoginSessionRepository, LoginSessionRepository>();
@@ -42,6 +46,15 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<IArgon2HashingService, Argon2HashingService>();
         services.AddScoped<ISHA256HashingService, SHA256HashingService>();
+    }
+
+    #endregion
+
+    #region Event Handlers
+
+    private static void RegisterEventHandlers(IServiceCollection services)
+    {
+        services.AddScoped<IQueueMessageSender, QueueMessageSender>();
     }
 
     #endregion

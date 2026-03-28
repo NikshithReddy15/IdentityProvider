@@ -6,15 +6,19 @@ using Extensions.Mapper;
 using Models.CoreModels;
 using Models.DataModels;
 using Models.DataTransferObjects;
+using Models.Enums;
+using Models.Events;
+using Services.Events;
 using Services.Repositories.LoginSession;
 using Services.Repositories.RefreshToken;
 using Services.Repositories.RevokedToken;
 using Services.Repositories.User;
+using Services.Repositories.UserOtp;
 using Services.TokenGeneration;
 
 namespace Services.Authentication;
 
-public class AuthenticationService(IUserRepository userRepository, IRevokedTokenRepository revokedTokenRepository, IRefreshTokenRepository refreshTokenRepository, ILoginSessionRepository loginSessionRepository, ITokenGenerationService tokenGenerationService, IArgon2HashingService hashingService, ISHA256HashingService sha256HashingService, IDapperDb dapperDb)
+public class AuthenticationService(IUserRepository userRepository, IUserOtpRepository userOtpRepository, IRevokedTokenRepository revokedTokenRepository, IRefreshTokenRepository refreshTokenRepository, ILoginSessionRepository loginSessionRepository, ITokenGenerationService tokenGenerationService, IArgon2HashingService hashingService, ISHA256HashingService sha256HashingService, IDapperDb dapperDb, IQueueMessageSender queueMessageSender)
     : IAuthenticationService
 {
     public async Task CreateUserAsync(RegisterUserDto registerUserDto)
@@ -24,12 +28,82 @@ public class AuthenticationService(IUserRepository userRepository, IRevokedToken
         {
             throw new Exception("This email is already taken. Please use another email address.");
         }
-        
+
         var userDataModel = registerUserDto.MapTo<UserDataModel>();
+        userDataModel.Id = Guid.NewGuid();
         userDataModel.Password = await hashingService.Hash(registerUserDto.Password);
+        userDataModel.AccountStatus = (sbyte)AccountStatus.NotVerified;
         userDataModel.SetAuditFieldsOnCreate();
-        
-        await userRepository.RegisterUser(userDataModel);
+
+        var otpCode = GenerateOtpCode();
+        var userOtp = new UserOtpDataModel
+        {
+            Id = Guid.NewGuid(),
+            UserId = userDataModel.Id,
+            OtpCode = otpCode,
+            ExpiresOn = DateTime.UtcNow.AddMinutes(10),
+            IsUsed = false,
+            DateCreated = DateTime.UtcNow,
+        };
+
+        try
+        {
+            dapperDb.BeginTransaction();
+            await userRepository.RegisterUser(userDataModel);
+            await userOtpRepository.CreateOtpAsync(userOtp);
+            dapperDb.CommitTransaction();
+        }
+        catch (Exception)
+        {
+            dapperDb.RollbackTransaction();
+            throw;
+        }
+
+        await queueMessageSender.SendMessageAsync(new RegistrationOtpEvent
+        {
+            UserIdentifier = userDataModel.Id,
+            Email = userDataModel.Email,
+            FirstName = userDataModel.FirstName,
+            OtpCode = otpCode,
+        });
+    }
+
+    public async Task VerifyRegistrationOtpAsync(VerifyOtpDto verifyOtpDto)
+    {
+        var userDataModel = await userRepository.GetUserByEmail(verifyOtpDto.Email);
+        if (userDataModel is null)
+        {
+            throw new Exception("User with this email doesn't exist.");
+        }
+
+        if (userDataModel.AccountStatus != (sbyte)AccountStatus.NotVerified)
+        {
+            throw new Exception("Account is already verified.");
+        }
+
+        var userOtp = await userOtpRepository.GetActiveOtpAsync(userDataModel.Id);
+        if (userOtp is null)
+        {
+            throw new Exception("No valid OTP found. Please request a new one.");
+        }
+
+        if (userOtp.OtpCode != verifyOtpDto.OtpCode)
+        {
+            throw new UnauthorizedAccessException("Invalid OTP.");
+        }
+
+        try
+        {
+            dapperDb.BeginTransaction();
+            await userOtpRepository.MarkOtpAsUsedAsync(userOtp.Id);
+            await userRepository.UpdateAccountStatusAsync(userDataModel.Id, (sbyte)AccountStatus.Active);
+            dapperDb.CommitTransaction();
+        }
+        catch (Exception)
+        {
+            dapperDb.RollbackTransaction();
+            throw;
+        }
     }
 
     public async Task<TokenDetailsDto> LoginAsync(EmailLoginDetailsDto emailLoginDetailsDto, string userAgent, string? ipAddress)
@@ -53,7 +127,6 @@ public class AuthenticationService(IUserRepository userRepository, IRevokedToken
             Id = Guid.NewGuid(),
             UserId = user.Id,
             DeviceId = emailLoginDetailsDto.DeviceId,
-            DeviceName = emailLoginDetailsDto.DeviceName,
             UserAgent = userAgent,
             IpAddress = ipAddress,
             IsActive = true,
@@ -188,6 +261,11 @@ public class AuthenticationService(IUserRepository userRepository, IRevokedToken
     }
 
     #region Private Methods
+
+    private static string GenerateOtpCode()
+    {
+        return Random.Shared.Next(100000, 999999).ToString();
+    }
 
     private (string JwtToken, RefreshTokenDataModel RefreshTokenDataModel) GenerateTokens(User user, Guid sessionId)
     {

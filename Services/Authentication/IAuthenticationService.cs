@@ -6,6 +6,8 @@ public interface IAuthenticationService
 {
     Task CreateUserAsync(RegisterUserDto registerUserDto);
 
+    Task VerifyRegistrationOtpAsync(VerifyOtpDto verifyOtpDto);
+
     Task<TokenDetailsDto> LoginAsync(EmailLoginDetailsDto emailLoginDetailsDto, string userAgent, string? ipAddress);
 
     Task LogoutAsync(SessionDetailsDto sessionDetailsDto, string jwtToken, DateTime expiresOn);

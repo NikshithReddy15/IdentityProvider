@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Encryption", "Encryption\En
 EndProject
 Project("{42EA0DBD-9CF1-443E-919E-BE9C484E4577}") = "Database", "Database\Database.sqlproj", "{07E66570-CF60-49E2-96D2-450B16911019}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Worker", "Worker\Worker.csproj", "{97AA23F1-0FC0-424D-B254-5411B225727C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +50,9 @@ Global
 		{07E66570-CF60-49E2-96D2-450B16911019}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07E66570-CF60-49E2-96D2-450B16911019}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07E66570-CF60-49E2-96D2-450B16911019}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97AA23F1-0FC0-424D-B254-5411B225727C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97AA23F1-0FC0-424D-B254-5411B225727C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97AA23F1-0FC0-424D-B254-5411B225727C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97AA23F1-0FC0-424D-B254-5411B225727C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -11,4 +11,6 @@ public interface IUserRepository
     Task<UserDataModel?> GetUserById(Guid userId);
 
     Task<UserDataModel?> GetUserByEmail(string email);
+
+    Task UpdateAccountStatusAsync(Guid userId, sbyte accountStatus);
 }

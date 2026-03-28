@@ -8,8 +8,8 @@ public class LoginSessionRepository (IDapperDb dapperDb) : ILoginSessionReposito
     public async Task CreateLoginSessionAsync(LoginSessionDataModel loginSessionDataModel)
     {
         var sql =
-            "INSERT INTO [dbo].[LoginSession] (Id, UserId, DeviceId, DeviceName, UserAgent, IpAddress, IsActive, LastSeenOn, DateCreated) " +
-            "VALUES (@Id, @UserId, @DeviceId, @DeviceName, @UserAgent, @IpAddress, @IsActive, @LastSeenOn, @DateCreated)";
+            "INSERT INTO [dbo].[LoginSession] (Id, UserId, DeviceId, UserAgent, IpAddress, IsActive, LastSeenOn, DateCreated) " +
+            "VALUES (@Id, @UserId, @DeviceId, @UserAgent, @IpAddress, @IsActive, @LastSeenOn, @DateCreated)";
         await dapperDb.ExecuteAsync(sql, loginSessionDataModel);
     }
 

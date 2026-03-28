@@ -13,4 +13,10 @@ public class UserRegistrationController (IAuthenticationService authenticationSe
     {
         await authenticationService.CreateUserAsync(registerUserDto);
     }
+
+    [HttpPost("verify-otp")]
+    public async Task VerifyOtpAsync(VerifyOtpDto verifyOtpDto)
+    {
+        await authenticationService.VerifyRegistrationOtpAsync(verifyOtpDto);
+    }
 }
