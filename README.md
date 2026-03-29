@@ -14,8 +14,8 @@ A .NET 10 Web API for user authentication, registration, and JWT-based authoriza
 - **Password hashing** — Argon2 for secure password storage
 - **Token revocation** — SHA256-hashed JWT blacklisting for enhanced security
 - **Background Worker** — Azure Service Bus consumer that handles async tasks (e.g., sending registration OTP emails via SMTP)
-- **Recurring Jobs** — Hangfire-powered scheduled jobs; cleans up expired/used OTPs every 10 minutes
-- **Delayed Jobs** — Token expiry events published to Service Bus; Worker receives them and schedules Hangfire delayed jobs that fire at exact expiry times to revoke refresh tokens, deactivate login sessions, and clean up the JWT blacklist
+- **Recurring Jobs** — Hangfire-powered scheduled jobs; cleans up expired/used OTPs every 10 minutes; bulk-revokes expired refresh tokens, deactivates their sessions, and purges expired JWT blacklist entries every hour
+- **Timed Events** — Token expiry events published to Service Bus; Worker receives them and fires in-process timed tasks that execute at exact expiry times to revoke refresh tokens, deactivate login sessions, and clean up the JWT blacklist
 
 ## Tech Stack
 
@@ -37,7 +37,7 @@ A .NET 10 Web API for user authentication, registration, and JWT-based authoriza
 | Project | Description |
 |--------|-------------|
 | `IdentityProvider.WebAPI` | ASP.NET Core API host — controllers, JWT middleware, Swagger |
-| `Worker` | .NET Background Service — Azure Service Bus consumer, email dispatch via MailKit, Hangfire server (recurring and delayed jobs: OTP cleanup, refresh token expiry, revoked token cleanup) |
+| `Worker` | .NET Background Service — Azure Service Bus consumer, email dispatch via MailKit, Hangfire server (recurring: OTP cleanup every 10 min, token expiry sweep every hour; timed: per-token in-process tasks) |
 | `Services` | Business logic — authentication, repositories (user, OTP, refresh token, login session, revoked token), token generation, Service Bus publisher |
 | `Models` | Domain models, DTOs, data models, events, enums |
 | `DatabaseAdapter` | Dapper-based data access layer with manual transaction support |

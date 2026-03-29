@@ -38,4 +38,14 @@ public class RefreshTokenRepository (IDapperDb dapperDb) : IRefreshTokenReposito
             "WHERE Id = @Id AND RevokedOn IS NULL";
         await dapperDb.ExecuteAsync(sql, new { Id = id, RevokedOn = DateTime.UtcNow });
     }
+
+    public async Task<IEnumerable<Guid>> RevokeExpiredRefreshTokensAsync()
+    {
+        var sql =
+            "UPDATE [dbo].[RefreshToken] " +
+            "SET RevokedOn = @RevokedOn " +
+            "OUTPUT INSERTED.SessionId " +
+            "WHERE ExpiresOn < @Now AND RevokedOn IS NULL";
+        return await dapperDb.QueryAsync<Guid>(sql, new { RevokedOn = DateTime.UtcNow, Now = DateTime.UtcNow });
+    }
 }

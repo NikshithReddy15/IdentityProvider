@@ -46,4 +46,9 @@ recurringJobManager.AddOrUpdate<OtpCleanupJob>(
     job => job.ExecuteAsync(),
     "*/10 * * * *");
 
+recurringJobManager.AddOrUpdate<TokenExpiryJob>(
+    "token-expiry",
+    job => job.ExecuteAsync(),
+    "0 * * * *");
+
 host.Run();

@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Models.DataTransferObjects;
 
 namespace IdentityProvider.WebAPI.Controllers.Authentication;
 

@@ -25,12 +25,11 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IEventHandler<RegistrationOtpEvent>, RegistrationOtpEventHandler>();
-        services.AddScoped<IEventHandler<ScheduleRefreshTokenExpiryEvent>, ScheduleRefreshTokenExpiryEventHandler>();
-        services.AddScoped<IEventHandler<ScheduleRevokedTokenCleanupEvent>, ScheduleRevokedTokenCleanupEventHandler>();
+        services.AddScoped<IEventHandler<RefreshTokenExpiryEvent>, RefreshTokenExpiryEventHandler>();
+        services.AddScoped<IEventHandler<RevokedTokenCleanupEvent>, RevokedTokenCleanupEventHandler>();
         services.AddSingleton<IDapperDb, DapperDb>();
         services.RegisterWorkerDependencies();
         services.AddScoped<OtpCleanupJob>();
-        services.AddScoped<RefreshTokenExpiryJob>();
-        services.AddScoped<ExpiredRevokedTokenDeletionJob>();
+        services.AddScoped<TokenExpiryJob>();
     }
 }

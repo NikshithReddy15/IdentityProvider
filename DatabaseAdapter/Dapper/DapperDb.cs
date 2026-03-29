@@ -79,6 +79,11 @@ public class DapperDb : IDapperDb, IDisposable
         return await Db.QuerySingleOrDefaultAsync<T>(sql, parameters, transaction: Transaction);
     }
 
+    public async Task<IEnumerable<T>> QueryAsync<T>(string sql, object? parameters = null)
+    {
+        return await Db.QueryAsync<T>(sql, parameters, transaction: Transaction);
+    }
+
     public void Dispose()
     {
         Connection?.Dispose();

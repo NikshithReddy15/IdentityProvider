@@ -1,6 +1,6 @@
 namespace Models.Events;
 
-public class ScheduleRevokedTokenCleanupEvent : BaseEvent
+public class RevokedTokenCleanupEvent : BaseEvent
 {
     public Guid RevokedTokenId { get; set; }
     public DateTimeOffset ExpiresAt { get; set; }

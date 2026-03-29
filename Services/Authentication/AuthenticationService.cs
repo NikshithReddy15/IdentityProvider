@@ -188,7 +188,7 @@ public class AuthenticationService(IUserRepository userRepository, IUserOtpRepos
             throw;
         }
 
-        await queueMessageSender.SendMessageAsync(new ScheduleRefreshTokenExpiryEvent
+        await queueMessageSender.SendMessageAsync(new RefreshTokenExpiryEvent
         {
             UserIdentifier = user.Id,
             RefreshTokenId = refreshToken.Id,
@@ -242,7 +242,7 @@ public class AuthenticationService(IUserRepository userRepository, IUserOtpRepos
             throw;
         }
 
-        await queueMessageSender.SendMessageAsync(new ScheduleRevokedTokenCleanupEvent
+        await queueMessageSender.SendMessageAsync(new RevokedTokenCleanupEvent
         {
             UserIdentifier = sessionDetailsDto.UserId,
             RevokedTokenId = revokedToken.Id,
@@ -295,13 +295,13 @@ public class AuthenticationService(IUserRepository userRepository, IUserOtpRepos
             throw;
         }
 
-        await queueMessageSender.SendMessageAsync(new ScheduleRevokedTokenCleanupEvent
+        await queueMessageSender.SendMessageAsync(new RevokedTokenCleanupEvent
         {
             UserIdentifier = sessionDetailsDto.UserId,
             RevokedTokenId = revokedToken.Id,
             ExpiresAt = new DateTimeOffset(revokedToken.ExpiresOn, TimeSpan.Zero),
         });
-        await queueMessageSender.SendMessageAsync(new ScheduleRefreshTokenExpiryEvent
+        await queueMessageSender.SendMessageAsync(new RefreshTokenExpiryEvent
         {
             UserIdentifier = sessionDetailsDto.UserId,
             RefreshTokenId = newRefreshTokenDataModel.Id,

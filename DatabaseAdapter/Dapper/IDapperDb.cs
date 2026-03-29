@@ -13,4 +13,6 @@ public interface IDapperDb
     Task ExecuteAsync(string sql, object? parameters = null);
 
     Task<T?> QuerySingleOrDefaultAsync<T>(string sql, object? parameters = null);
+
+    Task<IEnumerable<T>> QueryAsync<T>(string sql, object? parameters = null);
 }

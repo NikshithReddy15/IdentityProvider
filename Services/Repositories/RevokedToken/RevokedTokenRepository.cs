@@ -26,4 +26,10 @@ public class RevokedTokenRepository(IDapperDb dapperDb) : IRevokedTokenRepositor
         var sql = "DELETE FROM [dbo].[RevokedToken] WHERE Id = @Id";
         await dapperDb.ExecuteAsync(sql, new { Id = id });
     }
+
+    public async Task DeleteExpiredRevokedTokensAsync()
+    {
+        var sql = "DELETE FROM [dbo].[RevokedToken] WHERE ExpiresOn < @Now";
+        await dapperDb.ExecuteAsync(sql, new { Now = DateTime.UtcNow });
+    }
 }

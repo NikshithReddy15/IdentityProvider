@@ -9,4 +9,6 @@ public interface IRevokedTokenRepository
     Task CreateRevokedToken(RevokedTokenDataModel revokedToken);
 
     Task DeleteRevokedTokenByIdAsync(Guid id);
+
+    Task DeleteExpiredRevokedTokensAsync();
 }

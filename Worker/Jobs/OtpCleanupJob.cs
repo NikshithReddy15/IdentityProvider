@@ -6,8 +6,16 @@ public class OtpCleanupJob(IUserOtpRepository userOtpRepository, ILogger<OtpClea
 {
     public async Task ExecuteAsync()
     {
-        logger.LogInformation("OTP cleanup job started at {Time}", DateTime.UtcNow);
-        await userOtpRepository.DeleteExpiredAndUsedOtpsAsync();
-        logger.LogInformation("OTP cleanup job completed at {Time}", DateTime.UtcNow);
+        logger.LogInformation($"OTP cleanup job started at {DateTime.UtcNow}");
+        try
+        {
+            await userOtpRepository.DeleteExpiredAndUsedOtpsAsync();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error occurred while executing OTP cleanup job");
+        }
+
+        logger.LogInformation($"OTP cleanup job completed at {DateTime.UtcNow}");
     }
 }

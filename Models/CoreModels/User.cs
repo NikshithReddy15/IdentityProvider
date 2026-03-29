@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using Models.Enums;
 
 namespace Models.CoreModels;

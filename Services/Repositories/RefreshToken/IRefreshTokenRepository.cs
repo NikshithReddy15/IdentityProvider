@@ -11,4 +11,6 @@ public interface IRefreshTokenRepository
     Task RevokeRefreshToken(string refreshToken);
 
     Task RevokeRefreshTokenByIdAsync(Guid id);
+
+    Task<IEnumerable<Guid>> RevokeExpiredRefreshTokensAsync();
 }
