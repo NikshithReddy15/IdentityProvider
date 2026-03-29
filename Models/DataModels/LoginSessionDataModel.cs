@@ -7,7 +7,7 @@ public class LoginSessionDataModel : ICreatedAuditFields
     public Guid DeviceId { get; set; }
     public required string UserAgent { get; set; }
     public string? IpAddress { get; set; }
-    public bool IsActive { get; set; }
     public DateTime LastSeenOn { get; set; }
+    public DateTime? DeactivatedOn { get; set; }
     public DateTime DateCreated { get; set; }
 }

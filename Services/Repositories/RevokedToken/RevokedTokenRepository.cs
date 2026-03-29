@@ -16,8 +16,14 @@ public class RevokedTokenRepository(IDapperDb dapperDb) : IRevokedTokenRepositor
     public async Task CreateRevokedToken(RevokedTokenDataModel revokedToken)
     {
         var sql =
-            "INSERT INTO [dbo].[RevokedToken] (HashedToken, ExpiresOn, DateCreated) " +
-            "VALUES (@HashedToken, @ExpiresOn, @DateCreated)";
+            "INSERT INTO [dbo].[RevokedToken] (Id, HashedToken, ExpiresOn, DateCreated) " +
+            "VALUES (@Id, @HashedToken, @ExpiresOn, @DateCreated)";
         await dapperDb.ExecuteAsync(sql, revokedToken);
+    }
+
+    public async Task DeleteRevokedTokenByIdAsync(Guid id)
+    {
+        var sql = "DELETE FROM [dbo].[RevokedToken] WHERE Id = @Id";
+        await dapperDb.ExecuteAsync(sql, new { Id = id });
     }
 }

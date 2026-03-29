@@ -164,8 +164,7 @@ public class AuthenticationService(IUserRepository userRepository, IUserOtpRepos
             DeviceId = emailLoginDetailsDto.DeviceId,
             UserAgent = userAgent,
             IpAddress = ipAddress,
-            IsActive = true,
-            LastSeenOn =  currentDateTime,
+            LastSeenOn = currentDateTime,
             DateCreated = currentDateTime,
         };
         
@@ -189,6 +188,14 @@ public class AuthenticationService(IUserRepository userRepository, IUserOtpRepos
             throw;
         }
 
+        await queueMessageSender.SendMessageAsync(new ScheduleRefreshTokenExpiryEvent
+        {
+            UserIdentifier = user.Id,
+            RefreshTokenId = refreshToken.Id,
+            SessionId = loginSession.Id,
+            ExpiresAt = new DateTimeOffset(refreshToken.ExpiresOn, TimeSpan.Zero),
+        });
+
         return new TokenDetailsDto(jwtToken, refreshToken.RefreshToken);
     }
 
@@ -211,7 +218,7 @@ public class AuthenticationService(IUserRepository userRepository, IUserOtpRepos
             throw new Exception("Login session doesn't belong to the user.");
         }
 
-        if (!loginSession.IsActive)
+        if (loginSession.DeactivatedOn is not null)
         {
             throw new Exception("Login session is not active.");
         }
@@ -226,7 +233,7 @@ public class AuthenticationService(IUserRepository userRepository, IUserOtpRepos
             {
                 await refreshTokenRepository.RevokeRefreshToken(refreshTokenDataModel.RefreshToken);
             }
-            
+
             dapperDb.CommitTransaction();
         }
         catch (Exception)
@@ -234,6 +241,13 @@ public class AuthenticationService(IUserRepository userRepository, IUserOtpRepos
             dapperDb.RollbackTransaction();
             throw;
         }
+
+        await queueMessageSender.SendMessageAsync(new ScheduleRevokedTokenCleanupEvent
+        {
+            UserIdentifier = sessionDetailsDto.UserId,
+            RevokedTokenId = revokedToken.Id,
+            ExpiresAt = new DateTimeOffset(revokedToken.ExpiresOn, TimeSpan.Zero),
+        });
     }
 
     public async Task<TokenDetailsDto> RefreshTokenAsync(SessionDetailsDto sessionDetailsDto, string jwtToken, DateTime expiresOn)
@@ -255,7 +269,7 @@ public class AuthenticationService(IUserRepository userRepository, IUserOtpRepos
             throw new Exception("Login session doesn't belong to the user.");
         }
 
-        if (!loginSession.IsActive)
+        if (loginSession.DeactivatedOn is not null)
         {
             throw new Exception("Login session is not active.");
         }
@@ -271,15 +285,29 @@ public class AuthenticationService(IUserRepository userRepository, IUserOtpRepos
             {
                 await refreshTokenRepository.RevokeRefreshToken(refreshTokenDataModel.RefreshToken);
             }
-            
+
             await refreshTokenRepository.CreateRefreshToken(newRefreshTokenDataModel);
             dapperDb.CommitTransaction();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             dapperDb.RollbackTransaction();
             throw;
         }
+
+        await queueMessageSender.SendMessageAsync(new ScheduleRevokedTokenCleanupEvent
+        {
+            UserIdentifier = sessionDetailsDto.UserId,
+            RevokedTokenId = revokedToken.Id,
+            ExpiresAt = new DateTimeOffset(revokedToken.ExpiresOn, TimeSpan.Zero),
+        });
+        await queueMessageSender.SendMessageAsync(new ScheduleRefreshTokenExpiryEvent
+        {
+            UserIdentifier = sessionDetailsDto.UserId,
+            RefreshTokenId = newRefreshTokenDataModel.Id,
+            SessionId = loginSession.Id,
+            ExpiresAt = new DateTimeOffset(newRefreshTokenDataModel.ExpiresOn, TimeSpan.Zero),
+        });
 
         return new TokenDetailsDto(newJwtToken, newRefreshTokenDataModel.RefreshToken);
     }
@@ -315,10 +343,11 @@ public class AuthenticationService(IUserRepository userRepository, IUserOtpRepos
         var hashedToken = sha256HashingService.Hash(jwtToken);
         var revokedToken = new RevokedTokenDataModel
         {
+            Id = Guid.NewGuid(),
             HashedToken = hashedToken,
             ExpiresOn = expiresOn
         };
-        
+
         revokedToken.SetAuditFieldsOnCreate();
         return (refreshTokenDataModel, revokedToken);
     }

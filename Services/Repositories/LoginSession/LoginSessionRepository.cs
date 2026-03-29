@@ -8,8 +8,8 @@ public class LoginSessionRepository (IDapperDb dapperDb) : ILoginSessionReposito
     public async Task CreateLoginSessionAsync(LoginSessionDataModel loginSessionDataModel)
     {
         var sql =
-            "INSERT INTO [dbo].[LoginSession] (Id, UserId, DeviceId, UserAgent, IpAddress, IsActive, LastSeenOn, DateCreated) " +
-            "VALUES (@Id, @UserId, @DeviceId, @UserAgent, @IpAddress, @IsActive, @LastSeenOn, @DateCreated)";
+            "INSERT INTO [dbo].[LoginSession] (Id, UserId, DeviceId, UserAgent, IpAddress, LastSeenOn, DateCreated) " +
+            "VALUES (@Id, @UserId, @DeviceId, @UserAgent, @IpAddress, @LastSeenOn, @DateCreated)";
         await dapperDb.ExecuteAsync(sql, loginSessionDataModel);
     }
 
@@ -25,16 +25,16 @@ public class LoginSessionRepository (IDapperDb dapperDb) : ILoginSessionReposito
     {
         var sql =
             "UPDATE [dbo].[LoginSession] " +
-            "SET IsActive = 0, LastSeenOn = @LastSeenOn " +
-            "WHERE Id = @Id AND IsActive = 1";
-        await dapperDb.ExecuteAsync(sql, new { Id = sessionId, LastSeenOn = DateTime.UtcNow });
+            "SET DeactivatedOn = @DeactivatedOn " +
+            "WHERE Id = @Id AND DeactivatedOn IS NULL";
+        await dapperDb.ExecuteAsync(sql, new { Id = sessionId, DeactivatedOn = DateTime.UtcNow });
     }
 
     public async Task<bool> IsValidLoginSessionAsync(Guid userId, Guid sessionId)
     {
         var sql =
             "SELECT 1 FROM [dbo].[LoginSession] " +
-            "WHERE Id = @SessionId AND UserId = @UserId AND IsActive = 1";
-        return await dapperDb.ExecuteScalarAsync<bool>(sql, new { Id = sessionId, UserId = userId });
+            "WHERE Id = @SessionId AND UserId = @UserId AND DeactivatedOn IS NULL";
+        return await dapperDb.ExecuteScalarAsync<bool>(sql, new { SessionId = sessionId, UserId = userId });
     }
 }

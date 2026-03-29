@@ -18,6 +18,9 @@ public static class ServiceCollectionExtensions
     public static void RegisterWorkerDependencies(this IServiceCollection services)
     {
         services.AddScoped<IUserOtpRepository, UserOtpRepository>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddScoped<ILoginSessionRepository, LoginSessionRepository>();
+        services.AddScoped<IRevokedTokenRepository, RevokedTokenRepository>();
     }
 
     public static void RegisterAuthenticationWebApiServices(this IServiceCollection services)

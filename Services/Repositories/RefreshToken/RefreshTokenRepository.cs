@@ -8,8 +8,8 @@ public class RefreshTokenRepository (IDapperDb dapperDb) : IRefreshTokenReposito
     public async Task CreateRefreshToken(RefreshTokenDataModel refreshToken)
     {
         var sql =
-            "INSERT INTO [dbo].[RefreshToken](UserId, SessionId, RefreshToken, ExpiresOn, IsRevoked, DateCreated) " +
-            "VALUES (@UserId, @SessionId, @RefreshToken, @ExpiresOn, @IsRevoked, @DateCreated)";
+            "INSERT INTO [dbo].[RefreshToken](Id, UserId, SessionId, RefreshToken, ExpiresOn, DateCreated) " +
+            "VALUES (@Id, @UserId, @SessionId, @RefreshToken, @ExpiresOn, @DateCreated)";
         await dapperDb.ExecuteAsync(sql, refreshToken);
     }
 
@@ -17,16 +17,25 @@ public class RefreshTokenRepository (IDapperDb dapperDb) : IRefreshTokenReposito
     {
         var sql =
             "SELECT * FROM [dbo].[RefreshToken] " +
-            "WHERE UserId = @UserId AND SessionId = @SessionId AND IsRevoked = 0";
+            "WHERE UserId = @UserId AND SessionId = @SessionId AND RevokedOn IS NULL";
         return await dapperDb.QuerySingleOrDefaultAsync<RefreshTokenDataModel>(sql, new { UserId = userId, SessionId = sessionId });
     }
-    
+
     public async Task RevokeRefreshToken(string refreshToken)
     {
         var sql =
             "UPDATE [dbo].[RefreshToken] " +
-            "SET IsRevoked = 1, RevokedOn = @RevokedOn " +
-            "WHERE RefreshToken = @RefreshToken AND IsRevoked = 0";
+            "SET RevokedOn = @RevokedOn " +
+            "WHERE RefreshToken = @RefreshToken AND RevokedOn IS NULL";
         await dapperDb.ExecuteAsync(sql, new { RefreshToken = refreshToken, RevokedOn = DateTime.UtcNow });
+    }
+
+    public async Task RevokeRefreshTokenByIdAsync(Guid id)
+    {
+        var sql =
+            "UPDATE [dbo].[RefreshToken] " +
+            "SET RevokedOn = @RevokedOn " +
+            "WHERE Id = @Id AND RevokedOn IS NULL";
+        await dapperDb.ExecuteAsync(sql, new { Id = id, RevokedOn = DateTime.UtcNow });
     }
 }

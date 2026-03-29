@@ -7,6 +7,7 @@ CREATE TABLE [dbo].[RevokedToken]
     [DateCreated] DATETIME      NOT NULL
         CONSTRAINT DF_RevokedToken_DateCreated DEFAULT GETUTCDATE(),
 )
+GO
 
 CREATE NONCLUSTERED INDEX IX_RevokedToken_HashedToken_ExpiresOn
     ON [dbo].[RevokedToken](HashedToken, ExpiresOn)

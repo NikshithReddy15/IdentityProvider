@@ -15,6 +15,7 @@ A .NET 10 Web API for user authentication, registration, and JWT-based authoriza
 - **Token revocation** — SHA256-hashed JWT blacklisting for enhanced security
 - **Background Worker** — Azure Service Bus consumer that handles async tasks (e.g., sending registration OTP emails via SMTP)
 - **Recurring Jobs** — Hangfire-powered scheduled jobs; cleans up expired/used OTPs every 10 minutes
+- **Delayed Jobs** — Token expiry events published to Service Bus; Worker receives them and schedules Hangfire delayed jobs that fire at exact expiry times to revoke refresh tokens, deactivate login sessions, and clean up the JWT blacklist
 
 ## Tech Stack
 
@@ -29,14 +30,14 @@ A .NET 10 Web API for user authentication, registration, and JWT-based authoriza
 - AutoMapper for object mapping
 - Azure Key Vault for secrets management (optional)
 - Swagger/OpenAPI (development only)
-- Hangfire for recurring background jobs (SQL Server storage)
+- Hangfire for recurring and delayed background jobs (SQL Server storage)
 
 ## Project Structure
 
 | Project | Description |
 |--------|-------------|
 | `IdentityProvider.WebAPI` | ASP.NET Core API host — controllers, JWT middleware, Swagger |
-| `Worker` | .NET Background Service — Azure Service Bus consumer, email dispatch via MailKit, Hangfire recurring jobs |
+| `Worker` | .NET Background Service — Azure Service Bus consumer, email dispatch via MailKit, Hangfire server (recurring and delayed jobs: OTP cleanup, refresh token expiry, revoked token cleanup) |
 | `Services` | Business logic — authentication, repositories (user, OTP, refresh token, login session, revoked token), token generation, Service Bus publisher |
 | `Models` | Domain models, DTOs, data models, events, enums |
 | `DatabaseAdapter` | Dapper-based data access layer with manual transaction support |
@@ -133,8 +134,8 @@ Generates a new 6-digit OTP and sends it to the user's email. Only valid while `
 |-------|---------|
 | `User` | User accounts — stores name, email, hashed password, optional phone, `AccountStatus` (`0=NotVerified`, `1=Active`, `2=Inactive`, `3=LockedOut`) |
 | `UserOtp` | Short-lived 6-digit OTPs for email verification (10-minute expiry, single-use) |
-| `LoginSession` | Per-device sessions — tracks `DeviceId`, `UserAgent`, `IpAddress`, `IsActive`, `LastSeenOn` |
-| `RefreshToken` | Active refresh tokens per session — filtered unique index enforces one active token per `(UserId, SessionId)` |
+| `LoginSession` | Per-device sessions — tracks `DeviceId`, `UserAgent`, `IpAddress`, `LastSeenOn`, `DeactivatedOn` (NULL = active); indexed on `UserId` for login history queries |
+| `RefreshToken` | Refresh tokens per session — `RevokedOn` (NULL = active); filtered unique index enforces one active token per `(UserId, SessionId)` |
 | `RevokedToken` | JWT blacklist — stores SHA256 hash of revoked JWTs with expiry for efficient lookup |
 
 ## Prerequisites

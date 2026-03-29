@@ -51,11 +51,11 @@ public class TokenGenerationService(IConfiguration configuration) : ITokenGenera
         var refreshTokenExpirationDate = DateTime.UtcNow.AddDays(refreshTokenExpiryInDays);
         var refreshToken = new RefreshTokenDataModel
         {
+            Id = Guid.NewGuid(),
             UserId =  userId,
             SessionId = sessionId,
             RefreshToken = Convert.ToBase64String(bytes),
             ExpiresOn = refreshTokenExpirationDate,
-            IsRevoked = false,
         };
 
         refreshToken.SetAuditFieldsOnCreate();

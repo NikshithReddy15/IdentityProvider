@@ -6,8 +6,6 @@ CREATE TABLE [dbo].[RefreshToken]
     [SessionId]    UNIQUEIDENTIFIER NOT NULL,
     [RefreshToken] NVARCHAR(256)    NOT NULL,
     [ExpiresOn]    DATETIME         NOT NULL,
-    [IsRevoked]    BIT              NOT NULL
-        CONSTRAINT DF_RefreshToken_IsRevoked DEFAULT 0,
     [RevokedOn]    DATETIME         NULL,
     [DateCreated]  DATETIME         NOT NULL
         CONSTRAINT DF_RefreshToken_DateCreated DEFAULT GETUTCDATE(),
@@ -15,13 +13,16 @@ CREATE TABLE [dbo].[RefreshToken]
     CONSTRAINT FK_RefreshToken_User_UserId FOREIGN KEY (UserId) REFERENCES [dbo].[User](Id),
     CONSTRAINT FK_RefreshToken_LoginSession_SessionId FOREIGN KEY (SessionId) REFERENCES [dbo].[LoginSession](Id),
 )
+GO
 
-CREATE UNIQUE INDEX UQ_IX_RefreshToken_UserId_SessionId_IsRevoked
-    ON [dbo].[RefreshToken](UserId, SessionId, IsRevoked)
-    WHERE IsRevoked = 0
+CREATE UNIQUE NONCLUSTERED INDEX UQ_IX_RefreshToken_UserId_SessionId_Active
+    ON [dbo].[RefreshToken](UserId, SessionId)
+    WHERE RevokedOn IS NULL
+GO
 
 CREATE NONCLUSTERED INDEX IX_RefreshToken_UserId_SessionId
     ON [dbo].[RefreshToken](UserId, SessionId)
+GO
 
 CREATE NONCLUSTERED INDEX IX_RefreshToken_RefreshToken
     ON [dbo].[RefreshToken](RefreshToken)

@@ -9,4 +9,6 @@ public interface IRefreshTokenRepository
     Task<RefreshTokenDataModel?> GetRefreshToken(Guid userId, Guid sessionId);
     
     Task RevokeRefreshToken(string refreshToken);
+
+    Task RevokeRefreshTokenByIdAsync(Guid id);
 }

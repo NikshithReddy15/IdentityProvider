@@ -18,10 +18,12 @@ CREATE TABLE [dbo].[User]
     
     CONSTRAINT UQ_User_Email_CountryCode_MobileNumber UNIQUE (Email, CountryCode, MobileNumber),
 )
+GO
 
 CREATE UNIQUE NONCLUSTERED INDEX UQ_User_CountryCode_MobileNumber
     ON [dbo].[User](CountryCode, MobileNumber)
     WHERE CountryCode IS NOT NULL AND MobileNumber IS NOT NULL
+GO
 
 CREATE NONCLUSTERED INDEX IX_User_Email
     ON [dbo].[User](Email)
