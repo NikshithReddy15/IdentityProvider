@@ -1,7 +1,10 @@
+using DatabaseAdapter.Dapper;
 using Models.Events;
+using Services;
 using Worker.Email;
 using Worker.EventDispatcher;
 using Worker.EventHandlers;
+using Worker.Jobs;
 
 namespace Worker;
 
@@ -22,5 +25,8 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IEventHandler<RegistrationOtpEvent>, RegistrationOtpEventHandler>();
+        services.AddSingleton<IDapperDb, DapperDb>();
+        services.RegisterWorkerDependencies();
+        services.AddScoped<OtpCleanupJob>();
     }
 }

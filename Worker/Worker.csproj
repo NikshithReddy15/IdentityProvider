@@ -11,6 +11,9 @@
         <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.4.0" />
         <PackageReference Include="Azure.Identity" Version="1.18.0" />
         <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.20.1" />
+        <PackageReference Include="Hangfire.AspNetCore" Version="1.8.23" />
+        <PackageReference Include="Hangfire.Core" Version="1.8.23" />
+        <PackageReference Include="Hangfire.SqlServer" Version="1.8.23" />
         <PackageReference Include="MailKit" Version="4.11.0" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.3" />
     </ItemGroup>
@@ -18,5 +21,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Extensions\Extensions.csproj" />
       <ProjectReference Include="..\Models\Models.csproj" />
+      <ProjectReference Include="..\DatabaseAdapter\DatabaseAdapter.csproj" />
+      <ProjectReference Include="..\Services\Services.csproj" />
     </ItemGroup>
 </Project>

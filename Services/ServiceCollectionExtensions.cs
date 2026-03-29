@@ -15,6 +15,11 @@ namespace Services;
 
 public static class ServiceCollectionExtensions
 {
+    public static void RegisterWorkerDependencies(this IServiceCollection services)
+    {
+        services.AddScoped<IUserOtpRepository, UserOtpRepository>();
+    }
+
     public static void RegisterAuthenticationWebApiServices(this IServiceCollection services)
     {
         RegisterServices(services);

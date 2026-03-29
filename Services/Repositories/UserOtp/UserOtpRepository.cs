@@ -27,4 +27,10 @@ internal class UserOtpRepository(IDapperDb dapperDb) : IUserOtpRepository
         var sql = "UPDATE [dbo].[UserOtp] SET IsUsed = 1 WHERE Id = @Id";
         await dapperDb.ExecuteAsync(sql, new { Id = otpId });
     }
+
+    public async Task DeleteExpiredAndUsedOtpsAsync()
+    {
+        var sql = "DELETE FROM [dbo].[UserOtp] WHERE IsUsed = 1 OR ExpiresOn <= @Now";
+        await dapperDb.ExecuteAsync(sql, new { Now = DateTime.UtcNow });
+    }
 }

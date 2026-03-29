@@ -14,6 +14,7 @@ A .NET 10 Web API for user authentication, registration, and JWT-based authoriza
 - **Password hashing** — Argon2 for secure password storage
 - **Token revocation** — SHA256-hashed JWT blacklisting for enhanced security
 - **Background Worker** — Azure Service Bus consumer that handles async tasks (e.g., sending registration OTP emails via SMTP)
+- **Recurring Jobs** — Hangfire-powered scheduled jobs; cleans up expired/used OTPs every 10 minutes
 
 ## Tech Stack
 
@@ -28,13 +29,14 @@ A .NET 10 Web API for user authentication, registration, and JWT-based authoriza
 - AutoMapper for object mapping
 - Azure Key Vault for secrets management (optional)
 - Swagger/OpenAPI (development only)
+- Hangfire for recurring background jobs (SQL Server storage)
 
 ## Project Structure
 
 | Project | Description |
 |--------|-------------|
 | `IdentityProvider.WebAPI` | ASP.NET Core API host — controllers, JWT middleware, Swagger |
-| `Worker` | .NET Background Service — Azure Service Bus consumer, email dispatch via MailKit |
+| `Worker` | .NET Background Service — Azure Service Bus consumer, email dispatch via MailKit, Hangfire recurring jobs |
 | `Services` | Business logic — authentication, repositories (user, OTP, refresh token, login session, revoked token), token generation, Service Bus publisher |
 | `Models` | Domain models, DTOs, data models, events, enums |
 | `DatabaseAdapter` | Dapper-based data access layer with manual transaction support |

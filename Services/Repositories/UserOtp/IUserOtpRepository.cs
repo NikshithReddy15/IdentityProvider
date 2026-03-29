@@ -9,4 +9,6 @@ public interface IUserOtpRepository
     Task<UserOtpDataModel?> GetActiveOtpAsync(Guid userId);
 
     Task MarkOtpAsUsedAsync(Guid otpId);
+
+    Task DeleteExpiredAndUsedOtpsAsync();
 }
