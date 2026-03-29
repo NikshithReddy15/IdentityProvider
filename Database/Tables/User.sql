@@ -16,9 +16,12 @@ CREATE TABLE [dbo].[User]
     [DateModified]  DATETIME      NOT NULL
         CONSTRAINT DF_User_DateModified DEFAULT GETUTCDATE(),
     
-    CONSTRAINT UQ_User_CountryCode_MobileNumber UNIQUE (CountryCode, MobileNumber),
     CONSTRAINT UQ_User_Email_CountryCode_MobileNumber UNIQUE (Email, CountryCode, MobileNumber),
 )
+
+CREATE UNIQUE NONCLUSTERED INDEX UQ_User_CountryCode_MobileNumber
+    ON [dbo].[User](CountryCode, MobileNumber)
+    WHERE CountryCode IS NOT NULL AND MobileNumber IS NOT NULL
 
 CREATE NONCLUSTERED INDEX IX_User_Email
     ON [dbo].[User](Email)

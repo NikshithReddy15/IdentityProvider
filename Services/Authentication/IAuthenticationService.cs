@@ -8,6 +8,8 @@ public interface IAuthenticationService
 
     Task VerifyRegistrationOtpAsync(VerifyOtpDto verifyOtpDto);
 
+    Task ResendRegistrationOtpAsync(ResendOtpDto resendOtpDto);
+
     Task<TokenDetailsDto> LoginAsync(EmailLoginDetailsDto emailLoginDetailsDto, string userAgent, string? ipAddress);
 
     Task LogoutAsync(SessionDetailsDto sessionDetailsDto, string jwtToken, DateTime expiresOn);

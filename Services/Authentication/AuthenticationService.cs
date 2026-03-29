@@ -68,6 +68,41 @@ public class AuthenticationService(IUserRepository userRepository, IUserOtpRepos
         });
     }
 
+    public async Task ResendRegistrationOtpAsync(ResendOtpDto resendOtpDto)
+    {
+        var userDataModel = await userRepository.GetUserByEmail(resendOtpDto.Email);
+        if (userDataModel is null)
+        {
+            throw new Exception("User with this email doesn't exist.");
+        }
+
+        if (userDataModel.AccountStatus != (sbyte)AccountStatus.NotVerified)
+        {
+            throw new Exception("Account is already verified.");
+        }
+
+        var otpCode = GenerateOtpCode();
+        var userOtp = new UserOtpDataModel
+        {
+            Id = Guid.NewGuid(),
+            UserId = userDataModel.Id,
+            OtpCode = otpCode,
+            ExpiresOn = DateTime.UtcNow.AddMinutes(10),
+            IsUsed = false,
+            DateCreated = DateTime.UtcNow,
+        };
+
+        await userOtpRepository.CreateOtpAsync(userOtp);
+
+        await queueMessageSender.SendMessageAsync(new RegistrationOtpEvent
+        {
+            UserIdentifier = userDataModel.Id,
+            Email = userDataModel.Email,
+            FirstName = userDataModel.FirstName,
+            OtpCode = otpCode,
+        });
+    }
+
     public async Task VerifyRegistrationOtpAsync(VerifyOtpDto verifyOtpDto)
     {
         var userDataModel = await userRepository.GetUserByEmail(verifyOtpDto.Email);

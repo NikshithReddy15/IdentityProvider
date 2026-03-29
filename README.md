@@ -5,7 +5,7 @@ A .NET 10 Web API for user authentication, registration, and JWT-based authoriza
 ## Features
 
 - **User registration** — Create new user accounts with email and optional phone number
-- **Email OTP verification** — 6-digit OTP sent via email to activate new accounts (10-minute expiry)
+- **Email OTP verification** — 6-digit OTP sent via email to activate new accounts (10-minute expiry), with resend support
 - **Login** — Authenticate users and receive JWT and refresh tokens with per-device session management
 - **Login session management** — Track user sessions with device ID, user agent, and IP address
 - **Refresh token** — Exchange a valid refresh token for new JWT and refresh tokens
@@ -48,12 +48,11 @@ A .NET 10 Web API for user authentication, registration, and JWT-based authoriza
 |--------|----------|------|-------------|
 | `POST` | `/api/user/registration` | — | Register a new user; sends OTP email |
 | `POST` | `/api/user/registration/verify-otp` | — | Verify registration OTP and activate account |
+| `POST` | `/api/user/registration/resend-otp` | — | Resend registration OTP to the user's email |
 | `POST` | `/api/login` | — | Login and receive JWT + refresh tokens (creates a login session) |
 | `POST` | `/api/token/refresh` | Bearer | Exchange current token pair for a new JWT + refresh token |
 | `POST` | `/api/logout` | Bearer | Deactivate session, revoke refresh token, blacklist JWT |
 | `GET` | `/api/authentication` | Bearer | Validate authentication and session status |
-| `GET` | `/api/api-test/test-service-bus` | — | Send a test event to Service Bus (dev/test only) |
-| `GET` | `/api/api-test/test-service-bus-delayed` | — | Send a test event scheduled 10 seconds in the future (dev/test only) |
 
 ### Registration — `POST /api/user/registration`
 
@@ -81,6 +80,16 @@ A .NET 10 Web API for user authentication, registration, and JWT-based authoriza
 ```
 
 Marks the OTP as used and sets `AccountStatus = Active`.
+
+### Resend OTP — `POST /api/user/registration/resend-otp`
+
+```json
+{
+  "email": "string"
+}
+```
+
+Generates a new 6-digit OTP and sends it to the user's email. Only valid while `AccountStatus = NotVerified`.
 
 ### Login — `POST /api/login`
 

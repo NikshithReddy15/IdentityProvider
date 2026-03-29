@@ -21,7 +21,6 @@ public static class ServiceCollectionExtensions
     private static void RegisterServices(IServiceCollection services)
     {
         services.AddScoped<IEmailService, EmailService>();
-        services.AddScoped<IEventHandler<TestEvent>, TestEventHandler>();
         services.AddScoped<IEventHandler<RegistrationOtpEvent>, RegistrationOtpEventHandler>();
     }
 }

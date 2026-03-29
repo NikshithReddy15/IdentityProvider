@@ -19,4 +19,10 @@ public class UserRegistrationController (IAuthenticationService authenticationSe
     {
         await authenticationService.VerifyRegistrationOtpAsync(verifyOtpDto);
     }
+
+    [HttpPost("resend-otp")]
+    public async Task ResendOtpAsync(ResendOtpDto resendOtpDto)
+    {
+        await authenticationService.ResendRegistrationOtpAsync(resendOtpDto);
+    }
 }

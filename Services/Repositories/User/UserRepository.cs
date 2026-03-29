@@ -42,6 +42,6 @@ internal class UserRepository(IDapperDb dapperDb) : IUserRepository
         var sql =
             "UPDATE [dbo].[User] SET AccountStatus = @AccountStatus, DateModified = @DateModified " +
             "WHERE Id = @Id";
-        await dapperDb.ExecuteAsync(sql, new { Id = userId, AccountStatus = accountStatus, DateModified = DateTime.UtcNow });
+        await dapperDb.ExecuteAsync(sql, new { Id = userId, AccountStatus = (byte)accountStatus, DateModified = DateTime.UtcNow });
     }
 }
