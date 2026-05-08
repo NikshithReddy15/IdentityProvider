@@ -162,6 +162,7 @@ public class AuthenticationService(IUserRepository userRepository, IUserOtpRepos
             Id = Guid.NewGuid(),
             UserId = user.Id,
             DeviceId = emailLoginDetailsDto.DeviceId,
+            DeviceName = emailLoginDetailsDto.DeviceName,
             UserAgent = userAgent,
             IpAddress = ipAddress,
             LastSeenOn = currentDateTime,

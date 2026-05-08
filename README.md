@@ -100,11 +100,12 @@ Generates a new 6-digit OTP and sends it to the user's email. Only valid while `
 {
   "email": "string",
   "password": "string",
-  "deviceId": "guid"
+  "deviceId": "guid",
+  "deviceName": "string"
 }
 ```
 
-`deviceId` is required for per-device session tracking.
+`deviceId` and `deviceName` are required for per-device session tracking.
 
 ### Token Response
 
@@ -134,7 +135,7 @@ Generates a new 6-digit OTP and sends it to the user's email. Only valid while `
 |-------|---------|
 | `User` | User accounts — stores name, email, hashed password, optional phone, `AccountStatus` (`0=NotVerified`, `1=Active`, `2=Inactive`, `3=LockedOut`) |
 | `UserOtp` | Short-lived 6-digit OTPs for email verification (10-minute expiry, single-use) |
-| `LoginSession` | Per-device sessions — tracks `DeviceId`, `UserAgent`, `IpAddress`, `LastSeenOn`, `DeactivatedOn` (NULL = active); indexed on `UserId` for login history queries |
+| `LoginSession` | Per-device sessions — tracks `DeviceId`, `DeviceName`, `UserAgent`, `IpAddress`, `LastSeenOn`, `DeactivatedOn` (NULL = active); indexed on `UserId` for login history queries |
 | `RefreshToken` | Refresh tokens per session — `RevokedOn` (NULL = active); filtered unique index enforces one active token per `(UserId, SessionId)` |
 | `RevokedToken` | JWT blacklist — stores SHA256 hash of revoked JWTs with expiry for efficient lookup |
 

@@ -4,6 +4,7 @@ CREATE TABLE [dbo].[LoginSession]
         CONSTRAINT DF_LoginSession_Id DEFAULT NEWID(),
     [UserId]         UNIQUEIDENTIFIER NOT NULL,
     [DeviceId]       UNIQUEIDENTIFIER NOT NULL,
+    [DeviceName]     NVARCHAR(256)    NOT NULL,
     [UserAgent]      NVARCHAR(1024)   NOT NULL,
     [IpAddress]      NVARCHAR(45)     NULL,
     [LastSeenOn]     DATETIME         NOT NULL
