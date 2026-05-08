@@ -7,6 +7,7 @@
         <PackageId>IdentityProvider.Auth</PackageId>
         <Version>1.0.0</Version>
         <Description>JWT authentication middleware for microservices built on top of IdentityProvider. Configures HS256 bearer validation and an optional per-request revocation check via the IdentityProvider authentication endpoint.</Description>
+        <Authors>Nikshith Reddy Byreddy</Authors>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 
