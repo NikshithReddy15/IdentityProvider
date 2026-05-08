@@ -44,6 +44,53 @@ A .NET 10 Web API for user authentication, registration, and JWT-based authoriza
 | `Extensions` | AutoMapper factory, audit field helpers, JSON and string extensions |
 | `Encryption` | Argon2 password hashing, SHA256 token hashing |
 | `Database` | SQL Server schema project — DDL for all tables |
+| `IdentityProvider.Auth` | Reusable NuGet package — JWT Bearer validation middleware for other microservices (see below) |
+
+## IdentityProvider.Auth NuGet Package
+
+`IdentityProvider.Auth` is an internal SDK for other microservices that need to validate JWTs issued by this IdentityProvider. It centralises the HS256 bearer validation logic so consumer services don't duplicate JWT configuration or share secrets insecurely.
+
+### Installation
+
+Reference the built `.nupkg` from `IdentityProvider.Auth/bin/Debug/IdentityProvider.Auth.1.0.0.nupkg` via a local NuGet feed, or publish it to a private feed.
+
+### Usage
+
+```csharp
+// Program.cs of the consuming microservice
+builder.Services.AddIdentityProviderAuthentication(options =>
+{
+    options.Key      = config["JwtSettings:Key"];      // HS256 signing key (load from Key Vault)
+    options.Issuer   = config["JwtSettings:Issuer"];
+    options.Audience = config["JwtSettings:Audience"];
+
+    // Optional: validate each request against IdentityProvider's /api/authentication endpoint
+    options.EnableRemoteRevocationCheck  = true;
+    options.IdentityProviderBaseUrl      = config["IdentityProviderBaseUrl"];
+});
+
+// Still required in the consuming service:
+builder.Services.AddAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
+```
+
+### Options
+
+| Option | Required | Default | Description |
+|--------|----------|---------|-------------|
+| `Key` | Yes | — | HS256 signing key (must match the key used by IdentityProvider) |
+| `Issuer` | Yes | — | Expected JWT issuer (`JwtSettings:Issuer`) |
+| `Audience` | Yes | — | Expected JWT audience (`JwtSettings:Audience`) |
+| `EnableRemoteRevocationCheck` | No | `false` | When `true`, each validated token is verified against `GET /api/authentication` on IdentityProvider; rejects revoked/expired sessions |
+| `IdentityProviderBaseUrl` | Conditional | — | Required when `EnableRemoteRevocationCheck` is `true`; base URL of IdentityProvider (e.g. `https://identity.internal`) |
+
+### What it configures
+
+- JWT Bearer authentication with `MapInboundClaims = false` (raw `sub`/`sid` claim names)
+- `ValidateIssuer`, `ValidateAudience`, `ValidateLifetime`, `ValidateIssuerSigningKey` all enabled
+- Optional per-request revocation check via a named `IHttpClientFactory` client
+- Plain-text `401 Unauthorized` / `403 Forbidden` responses on challenge/failure (consistent with IdentityProvider itself)
 
 ## API Endpoints
 
