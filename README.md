@@ -120,12 +120,7 @@ Generates a new 6-digit OTP and sends it to the user's email. Only valid while `
 
 ### Logout / Refresh — `POST /api/logout` and `POST /api/token/refresh`
 
-```json
-{
-  "userId": "guid",
-  "sessionId": "guid"
-}
-```
+No request body. `userId` and `sessionId` are extracted server-side from the `sub` and `sid` JWT claims.
 
 **Note:** The JWT includes a session ID (`sid` claim) that links to the active `LoginSession`. On every authenticated request, the middleware SHA256-hashes the incoming JWT and checks the `RevokedToken` table, then verifies the referenced `LoginSession` is still active.
 

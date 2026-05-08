@@ -33,6 +33,7 @@ if (string.IsNullOrEmpty(keyConfiguration.Value) || string.IsNullOrEmpty(issuerC
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
+    options.MapInboundClaims = false;
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
